@@ -11,7 +11,7 @@ else
 fi
 ## bash-fx is ready
 
-printHeader "💽 ${SCRIPT_NAME} setup script..."
+fxHeader "💽 ${SCRIPT_NAME} setup script"
 
 ## Install directory
 INSTALL_DIR_PARENT="/usr/local/turbolab.it/"
@@ -24,13 +24,13 @@ mkdir -p "/etc/turbolab.it/"
 echo ""
 if [ ! -d "$INSTALL_DIR" ]; then
 
-  printTitle "💽 Installing..."
+  fxTitle "💽 Installing..."
   mkdir -p "$INSTALL_DIR_PARENT"
   cd "$INSTALL_DIR_PARENT"
   git clone https://github.com/TurboLabIt/${SCRIPT_NAME}.git
   
 else
-  printTitle "⏬ Updating..."
+  fxTitle "⏬ Updating..."
 fi
 
 cd "$INSTALL_DIR"

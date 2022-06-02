@@ -11,6 +11,6 @@ else
 fi
 ## bash-fx is ready
 
-printTitle "✅ ${SCRIPT_NAME} setup script DONE!"
-printMessage "See https://github.com/TurboLabIt/${SCRIPT_NAME} for the quickstart guide."
+fxTitle "✅ ${SCRIPT_NAME} setup script DONE!"
+fxMessage "See https://github.com/TurboLabIt/${SCRIPT_NAME} for the quickstart guide."
 
