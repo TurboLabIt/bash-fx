@@ -27,6 +27,6 @@ function fxTitle()
 
 function fxMessage()
 {
-  echo -e "\e[1;35m${1}\e[0m"
+  echo -e "\e[1;34m${1}\e[0m"
 }
 
