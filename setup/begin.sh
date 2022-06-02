@@ -11,7 +11,7 @@ else
 fi
 ## bash-fx is ready
 
-printTitle "💽 ${SCRIPT_NAME} setup script..."
+printHeader "💽 ${SCRIPT_NAME} setup script..."
 
 ## Install directory
 INSTALL_DIR_PARENT="/usr/local/turbolab.it/"
