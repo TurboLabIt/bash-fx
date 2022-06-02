@@ -18,7 +18,7 @@ fi
 ````
 
 
-# Install
+# How to create a setp.sh
 
 In the project `setup.sh`:
 
