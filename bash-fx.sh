@@ -27,6 +27,6 @@ function fxTitle()
 
 function fxMessage()
 {
-  echo "🪧⚡ ${1}"
+  echo -e "\e[1;45m🪧 ${1}\e[0m"
 }
 
