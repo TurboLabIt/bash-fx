@@ -10,7 +10,7 @@ At the top of the script:
 ````bash
 ## bash-fx
 if [ -f "/usr/local/turbolab.it/bash-fx/bash-fx.sh" ]; then
-  source "/usr/local/turbolab.it/bash-fx/bash-fx.sh" 
+  source "/usr/local/turbolab.it/bash-fx/bash-fx.sh"
 else
   source <(curl -s https://raw.github.com/TurboLabIt/bash-fx/bash-fx.sh)
 fi
