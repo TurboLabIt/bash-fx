@@ -4,7 +4,6 @@ function fxHeader()
 {
   local CHAR_NUM=${#1}
   
-  echo ""
   echo -e "\e[1;46m"
   printf '%0.s=' $(seq 0 $CHAR_NUM)
   echo ""

@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-echo ""
 
 if [ -z "$(command -v curl)" ]; then
   sudo apt update && sudo apt install curl -y

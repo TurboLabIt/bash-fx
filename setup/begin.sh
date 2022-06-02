@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-echo ""
-
 SCRIPT_NAME=$1
 
 ## bash-fx
