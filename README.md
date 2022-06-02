@@ -31,4 +31,3 @@ curl -s https://raw.githubusercontent.com/TurboLabIt/bash-fx/master/setup.sh?$(d
 source /usr/local/turbolab.it/bash-fx/bash-fx.sh
 ## bash-fx is ready
 ````
-
