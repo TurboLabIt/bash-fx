@@ -18,7 +18,7 @@ fi
 ````
 
 
-# How to create a setp.sh
+# How to create a setup.sh
 
 In the project `setup.sh`:
 
