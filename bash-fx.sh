@@ -98,5 +98,5 @@ function fxSourceLocalOrRemote()
   fi
 }
 
-fxSourceLocalOrRemote "config-loader.sh"
+fxSourceLocalOrRemote "scripts/config-loader.sh"
 
