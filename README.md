@@ -15,6 +15,9 @@ else
   source <(curl -s https://raw.githubusercontent.com/TurboLabIt/bash-fx/main/bash-fx.sh)
 fi
 ## bash-fx is ready
+
+fxHeader "MY SCRIPT NAME"
+rootCheck
 ````
 
 
