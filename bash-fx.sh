@@ -21,11 +21,12 @@ function fxTitle()
   echo ""
   echo -e "\e[1;44m${1}\e[0m"
   echo -e "\e[1;44m${UNDERLINE}\e[0m"
+  echo ""
 }
 
 
 function fxMessage()
 {
-  echo -e "\e[1;33m${1}\e[0m"
+  echo -e "\033[1;37m${1}\e[0m"
 }
 
