@@ -9,11 +9,11 @@ At the top of the script:
 
 ````bash
 ## bash-fx
-if [ -z "$(command -v curl)" ]; then
-  sudo apt update && sudo apt install curl -y
+if [ -f "/usr/local/turbolab.it/bash-fx/bash-fx.sh" ]; then
+  source "/usr/local/turbolab.it/bash-fx/bash-fx.sh" 
+else
+  source <(curl -s https://raw.github.com/TurboLabIt/bash-fx/bash-fx.sh)
 fi
-curl -s https://raw.githubusercontent.com/TurboLabIt/bash-fx/master/setup.sh?$(date +%s) | sudo bash
-source /usr/local/turbolab.it/bash-fx/bash-fx.sh
 ## bash-fx is ready
 ````
 
@@ -24,7 +24,11 @@ In the project `setup.sh`:
 
 ````bash
 ## bash-fx
-sudo apt update && sudo apt install curl -y && curl -s https://raw.githubusercontent.com/TurboLabIt/bash-fx/master/setup.sh?$(date +%s) | sudo bash
-source ""
+if [ -z "$(command -v curl)" ]; then
+  sudo apt update && sudo apt install curl -y
+fi
+curl -s https://raw.githubusercontent.com/TurboLabIt/bash-fx/master/setup.sh?$(date +%s) | sudo bash
+source /usr/local/turbolab.it/bash-fx/bash-fx.sh
+## bash-fx is ready
 ````
 
