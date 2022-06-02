@@ -7,7 +7,7 @@ ${SCRIPT_NAME}=$1
 if [ -f "/usr/local/turbolab.it/bash-fx/bash-fx.sh" ]; then
   source "/usr/local/turbolab.it/bash-fx/bash-fx.sh" 
 else
-  source <(curl -s https://raw.github.com/TurboLabIt/bash-fx/bash-fx.sh)
+  source <(curl -s https://raw.githubusercontent.com/TurboLabIt/bash-fx/main/bash-fx.sh)
 fi
 ## bash-fx is ready
 
