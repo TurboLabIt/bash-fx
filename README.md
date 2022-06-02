@@ -21,6 +21,7 @@ fi
 In the project `setup.sh`:
 
 ````bash
+## bash-fx
 sudo apt update && sudo apt install curl -y && curl -s https://raw.githubusercontent.com/TurboLabIt/bash-fx/master/setup.sh?$(date +%s) | sudo bash
 ````
 
