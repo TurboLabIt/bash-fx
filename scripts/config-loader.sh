@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+CONFIGFILE_FULLPATH_DEFAULT=${SCRIPT_DIR}${SCRIPT_NAME}.default.conf
+CONFIGFILE_NAME=${SCRIPT_NAME}.conf
+CONFIGFILE_FULLPATH_ETC=/etc/turbolab.it/$CONFIGFILE_NAME
+CONFIGFILE_FULLPATH_DIR=${SCRIPT_DIR}${CONFIGFILE_NAME}
+
+## Config reading function
+function fxConfigLoader()
+{
+  for CONFIGFILE_FULLPATH in "$@"
+  do
+    if [ -f "$CONFIGFILE_FULLPATH" ]; then
+      source "$CONFIGFILE_FULLPATH"
+    fi
+  done
+}
+
+fxConfigLoader "$CONFIGFILE_FULLPATH_DEFAULT" "$CONFIGFILE_FULLPATH_ETC" "$CONFIGFILE_FULLPATH_DIR"
+
