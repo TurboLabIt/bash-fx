@@ -48,7 +48,7 @@ function fxMessage()
 }
 
 
-function fxOk()
+function fxOK()
 {
   echo -e "\e[1;32m ✔ OK \e[0m"
 }
