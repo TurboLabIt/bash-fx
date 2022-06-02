@@ -48,6 +48,12 @@ function fxMessage()
 }
 
 
+function fxOk()
+{
+  echo -e "\e[1;32m ✔ OK \e[0m"
+}
+
+
 function fxCatastrophicError()
 {
   echo -e "\e[1;41m${1}\e[0m"
