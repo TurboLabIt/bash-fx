@@ -11,13 +11,6 @@ fi
 
 fxHeader "💽 ${SCRIPT_NAME} setup script"
 
-## Install directory
-if [ -f "/usr/local/turbolab.it/bash-fx/setup/path.sh" ]; then
-  source "/usr/local/turbolab.it/bash-fx/setup/path.sh" 
-else
-  source <(curl -s https://raw.githubusercontent.com/TurboLabIt/bash-fx/main/setup/path.sh)
-fi
-
 ## /etc/ config directory
 mkdir -p "/etc/turbolab.it/"
 
