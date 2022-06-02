@@ -27,6 +27,6 @@ function fxTitle()
 
 function fxMessage()
 {
-  echo -e "\033[1;37m${1}\e[0m"
+  echo -e "\033[1;34m${1}\e[0m"
 }
 
