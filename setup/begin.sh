@@ -28,6 +28,7 @@ if [ ! -d "$INSTALL_DIR" ]; then
   git clone https://github.com/TurboLabIt/${SCRIPT_NAME}.git
   
 else
+
   fxTitle "⏬ Updating..."
 fi
 
