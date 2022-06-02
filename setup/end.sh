@@ -10,5 +10,6 @@ fi
 ## bash-fx is ready
 
 fxTitle "✅ ${SCRIPT_NAME} setup script DONE!"
-fxMessage "See https://github.com/TurboLabIt/${SCRIPT_NAME} for the quickstart guide."
+fxMessage "🪧 See https://github.com/TurboLabIt/${SCRIPT_NAME} for the quickstart guide."
 echo ""
+
