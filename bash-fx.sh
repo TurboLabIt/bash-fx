@@ -10,7 +10,6 @@ function fxHeader()
   echo "${1}"
   printf '%0.s=' $(seq 0 $CHAR_NUM)
   echo -e "\e[0m"
-  echo ""
 }
 
 
@@ -23,5 +22,11 @@ function fxTitle()
   echo -e "\e[1;44m${1}\e[0m"
   echo -e "\e[1;44m${UNDERLINE}\e[0m"
   echo ""
+}
+
+
+function fxMessage()
+{
+  echo -e "\e[1;35m${1}\e[0m"
 }
 
