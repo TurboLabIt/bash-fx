@@ -14,15 +14,14 @@ function fxHeader()
 }
 
 
-
 function fxTitle()
 {
   local CHAR_NUM=${#1}
+  local UNDERLINE=$(printf '%0.s-' $(seq 0 $CHAR_NUM))
   
-  echo -e "\e[1;44m"
-  echo "${1}"
-  printf '%0.s-' $(seq 0 $CHAR_NUM)
-  echo -e "\e[0m"
+  echo ""
+  echo -e "\e[1;44m${1}\e[0m"
+  echo -e "\e[1;44m${UNDERLINE}\e[0m"
   echo ""
 }
 
