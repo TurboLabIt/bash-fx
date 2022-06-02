@@ -13,3 +13,16 @@ function fxHeader()
   echo ""
 }
 
+
+
+function fxTitle()
+{
+  local CHAR_NUM=${#1}
+  
+  echo -e "\e[1;44m"
+  echo "${1}"
+  printf '%0.s-' $(seq 0 $CHAR_NUM)
+  echo -e "\e[0m"
+  echo ""
+}
+
