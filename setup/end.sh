@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 echo ""
 
-${SCRIPT_NAME}=$1
+SCRIPT_NAME=$1
 
 ## bash-fx
 if [ -f "/usr/local/turbolab.it/bash-fx/bash-fx.sh" ]; then
