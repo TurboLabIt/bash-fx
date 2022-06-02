@@ -14,9 +14,7 @@ mkdir -p "/etc/turbolab.it/"
 
 ## Pre-requisites
 if [ ! -d "$INSTALL_DIR" ]; then
-
   apt update && apt install git -y
-  
 fi
 
 ## Install/update
