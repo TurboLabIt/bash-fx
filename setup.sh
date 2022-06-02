@@ -1,48 +1,20 @@
-#!/bin/bash
+#!/usr/bin/env bash
 echo ""
 
-## Script name
+if [ -z "$(command -v curl)" ]; then
+  sudo apt update && sudo apt install curl -y
+fi
+
 SCRIPT_NAME=bash-fx
 
-## Install directory
-WORKING_DIR_ORIGINAL="$(pwd)"
-INSTALL_DIR_PARENT="/usr/local/turbolab.it/"
-INSTALL_DIR=${INSTALL_DIR_PARENT}${SCRIPT_NAME}/
+## begin
+curl -o /tmp/bash-fx-setup-begin.sh -s https://raw.github.com/TurboLabIt/bash-fx/setup/begin.sh
+sudo bash /tmp/bash-fx-setup-begin.sh ${SCRIPT_NAME}
 
-## /etc/ config directory
-mkdir -p "/etc/turbolab.it/"
+## end
+curl -o /tmp/bash-fx-setup-end.sh -s https://raw.github.com/TurboLabIt/bash-fx/setup/end.sh
+sudo bash /tmp/bash-fx-setup-end.sh ${SCRIPT_NAME}
 
-## Pre-requisites
-if [ ! -d "$INSTALL_DIR" ]; then
-  apt update && apt install git -y
-fi
-
-## Install/update
-echo ""
-if [ ! -d "$INSTALL_DIR" ]; then
-
-  echo "Installing..."
-  echo "-------------"
-  mkdir -p "$INSTALL_DIR_PARENT"
-  cd "$INSTALL_DIR_PARENT"
-  git clone https://github.com/TurboLabIt/${SCRIPT_NAME}.git
-  
-else
-
-  echo "Updating..."
-  echo "----------"
-  
-fi
-
-## pull new code
-cd "$INSTALL_DIR"
-git pull
-
-## Restore working directory
-cd $WORKING_DIR_ORIGINAL
-
-echo ""
-echo "Setup completed!"
-echo "----------------"
-echo "See https://github.com/TurboLabIt/${SCRIPT_NAME} for the quickstart guide."
+## cleanup
+sudo rm -f /tmp/bash-fx-setup*.sh
 
