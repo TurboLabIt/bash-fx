@@ -60,12 +60,23 @@ function fxCatastrophicError()
 }
 
 
-rootCheck()
+function rootCheck()
 {
   if ! [ $(id -u) = 0 ]; then
     echo ""
     fxCatastrophicError "💂 This script must run as ROOT"
-    fxEndFooter
+    fxEndFooter failure
+    exit
+  fi
+}
+
+
+function fxExitOnNonZero()
+{
+  if [ "$1" != 0 ]; then
+    echo ""
+    fxCatastrophicError "🛑 Critical command failure! Forced exit"
+    fxEndFooter failure
     exit
   fi
 }
@@ -75,7 +86,12 @@ function fxEndFooter()
 {
   local CHAR_NUM=20
   
-  echo -e "\e[1;42m"
+  if [ "$1" = "failure" ]; then
+    echo -e "\e[1;41m"
+  else
+    echo -e "\e[1;42m"
+  fi
+  
   printf '%0.s=' $(seq 0 $CHAR_NUM)
   echo ""
   echo "🏁 The End 🏁"
