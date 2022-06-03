@@ -84,6 +84,7 @@ function fxEndFooter()
   echo "$(date) on $(hostname)"
   echo "Total time: $((($(date +%s)-$TIME_START)/60)) min."
   echo -e "\e[0m"
+  echo ""
 }
 
 
