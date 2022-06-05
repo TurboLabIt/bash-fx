@@ -15,6 +15,8 @@ if [ -z "$SCRIPT_NAME" ]; then
   SCRIPT_NAME=$(basename "$SCRIPT_FULLPATH" .sh)
 fi
 
+BASHFX_INSTALL_DIR="/usr/local/turbolab.it/bash-fx/"
+
 function fxHeader()
 {
   local CHAR_NUM=${#1}
@@ -116,4 +118,5 @@ function fxSourceLocalOrRemote()
 }
 
 fxSourceLocalOrRemote "scripts/config-loader.sh"
+fxSourceLocalOrRemote "scripts/iptables-plus.sh"
 
