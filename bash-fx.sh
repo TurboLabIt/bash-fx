@@ -119,4 +119,5 @@ function fxSourceLocalOrRemote()
 
 fxSourceLocalOrRemote "scripts/config-loader.sh"
 fxSourceLocalOrRemote "scripts/iptables-plus.sh"
+fxSourceLocalOrRemote "scripts/network.sh"
 
