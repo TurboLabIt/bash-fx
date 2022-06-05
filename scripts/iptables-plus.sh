@@ -43,3 +43,41 @@ function fxIptablesCreateChainIfNotExists()
     iptables -nL "$CHAIN_NAME"
   fi
 }
+
+
+function fxIptablesCheckEmptyChain()
+{
+  local CHAIN_NAME=$1
+  local SILENT_MODE=$2
+  
+  fxIptablesChainExists "$CHAIN_NAME" "$SILENT_MODE"
+  local CHAIN_EXISTS=$?
+  
+  if [ "$CHAIN_EXISTS" != 0 ]; then
+    return 255
+  fi
+
+
+  local CHAIN_RULES=$(iptables -S "$CHAIN_NAME" | grep -v "\-N $CHAIN_NAME")
+  
+  
+  if [ -z "$CHAIN_RULES" ] && [ -z "$SILENT_MODE" ]; then
+    echo ""
+    fxMessage "🕳️ The chain $CHAIN_NAME is empty"
+    return 255
+  fi
+  
+  if [ -z "$CHAIN_RULES" ]; then
+    return 255
+  fi
+  
+  
+  if [ -z "$SILENT_MODE" ]; then
+    echo ""
+    fxMessage "✔️ The chain is not empty"
+    return 0
+  fi
+  
+  return 0
+}
+
