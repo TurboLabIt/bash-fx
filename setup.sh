@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
-if [ -z "$(command -v curl)" ]; then
-  sudo apt update && sudo apt install curl -y
-fi
+sudo apt update && sudo apt install curl git -y
 
 SCRIPT_NAME=bash-fx
 
@@ -16,4 +14,3 @@ sudo bash /tmp/bash-fx-setup-end.sh ${SCRIPT_NAME}
 
 ## cleanup
 sudo rm -f /tmp/bash-fx-setup*.sh
-
