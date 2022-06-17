@@ -56,6 +56,12 @@ function fxOK()
 }
 
 
+function fxWarning()
+{
+  echo -e "\e[1;33m ⚠⚠⚠ $1 \e[0m"
+}
+
+
 function fxCatastrophicError()
 {
   echo -e "\e[1;41m${1}\e[0m"
@@ -120,4 +126,3 @@ function fxSourceLocalOrRemote()
 fxSourceLocalOrRemote "scripts/config-loader.sh"
 fxSourceLocalOrRemote "scripts/iptables-plus.sh"
 fxSourceLocalOrRemote "scripts/network.sh"
-
