@@ -70,7 +70,7 @@ function fxCatastrophicError()
   echo -e "\e[1;41m^^^^^^^^^^^^^^^^^^^^^^^^\e[0m"
   echo -e "\e[1;41m${1}\e[0m"
   
-  if [ -z "$1" ]; then
+  if [ -z "$2" ]; then
     fxEndFooter failure
     exit
   fi
