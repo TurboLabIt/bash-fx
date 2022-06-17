@@ -9,7 +9,7 @@ function fxHashFile
 function fxSelfUpdateHashCheck()
 {
   if [ "${1}" != "${2}" ]; then
-    catastrophicError "🔃 The script itself has been updated! Please run it again!"
+    fxCatastrophicError "🔃 The script itself has been updated! Please run it again!"
     exit
   fi
 }
