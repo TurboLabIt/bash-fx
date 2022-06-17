@@ -64,17 +64,23 @@ function fxWarning()
 
 function fxCatastrophicError()
 {
+  echo ""
+  echo -e "\e[1;41mvvvvvvvvvvvvvvvvvvvvvvvv\e[0m"
+  echo -e "\e[1;41m🛑 Catastrophic error 🛑\e[0m"
+  echo -e "\e[1;41m^^^^^^^^^^^^^^^^^^^^^^^^\e[0m"
   echo -e "\e[1;41m${1}\e[0m"
+  
+  if [ -z "$1" ]; then
+    fxEndFooter failure
+    exit
+  fi
 }
 
 
 function rootCheck()
 {
   if ! [ $(id -u) = 0 ]; then
-    echo ""
     fxCatastrophicError "💂 This script must run as ROOT"
-    fxEndFooter failure
-    exit
   fi
 }
 
@@ -82,10 +88,7 @@ function rootCheck()
 function fxExitOnNonZero()
 {
   if [ "$1" != 0 ]; then
-    echo ""
     fxCatastrophicError "🛑 Critical command failure! Forced exit"
-    fxEndFooter failure
-    exit
   fi
 }
 
