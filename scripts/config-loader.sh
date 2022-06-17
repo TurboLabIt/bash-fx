@@ -26,6 +26,6 @@ function fxLoadConfigFromInput()
 function fxConfigLoader()
 {
   fxTitle "📋 Reading the config..."
-  fxConfigLoader "$CONFIGFILE_FULLPATH_DEFAULT" "$CONFIGFILE_FULLPATH_ETC" "$CONFIGFILE_FULLPATH_DIR"
+  fxLoadConfigFromInput "$CONFIGFILE_FULLPATH_DEFAULT" "$CONFIGFILE_FULLPATH_ETC" "$CONFIGFILE_FULLPATH_DIR"
 }
 
