@@ -93,5 +93,9 @@ function openPort()
     PROTOCOL=tcp
   fi
   
+  if [ -z "$SILENT_MODE" ]; then
+   fxMessage "${COMMENT}"
+  fi
+  
   iptables -A INPUT -p "$PROTOCOL" --dport "${PORT_NUMBER}" -j ACCEPT -m comment --comment "${COMMENT}"
 }
