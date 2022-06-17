@@ -81,3 +81,17 @@ function fxIptablesCheckEmptyChain()
   return 0
 }
 
+
+function openPort()
+{
+  local PORT_NUMBER=$1
+  local COMMENT=$2
+  local PROTOCOL=$3
+  local SILENT_MODE=$4
+  
+  if [ -z "$PROTOCOL" ]; then
+    PROTOCOL=tcp
+  fi
+  
+  iptables -A INPUT -p "$PROTOCOL" --dport "${PORT_NUMBER}" -j ACCEPT -m comment --comment "${COMMENT}"
+}
