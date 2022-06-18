@@ -52,7 +52,12 @@ function fxMessage()
 
 function fxOK()
 {
-  echo -e "\e[1;32m ✔ OK \e[0m"
+  local $MESSAGE=$1
+  if [ -z "$MESSAGE" ]; then
+    MESSSAGE=OK
+  fi
+  
+  echo -e "\e[1;32m✔ ${MESSAGE}\e[0m"
 }
 
 
