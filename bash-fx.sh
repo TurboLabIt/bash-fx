@@ -52,7 +52,7 @@ function fxMessage()
 
 function fxOK()
 {
-  local $MESSAGE=$1
+  local MESSAGE=$1
   if [ -z "$MESSAGE" ]; then
     MESSSAGE=OK
   fi
