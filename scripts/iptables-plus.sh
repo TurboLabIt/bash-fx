@@ -82,7 +82,7 @@ function fxIptablesCheckEmptyChain()
 }
 
 
-function openPort()
+function fxOpenPort()
 {
   local PORT_NUMBER=$1
   local COMMENT=$2
@@ -99,3 +99,4 @@ function openPort()
   
   iptables -A INPUT -p "$PROTOCOL" --dport "${PORT_NUMBER}" -j ACCEPT -m comment --comment "${COMMENT}"
 }
+
