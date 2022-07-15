@@ -18,7 +18,7 @@ function fxLinkBin()
   fi
   
   fxTitle "🧹 Removing existing $LINK_NAME links..."
-  sudo rm -f "/usr/bin/$2" "/usr/local/bin/$2"
+  sudo rm -f "/usr/bin/$LINK_NAME" "/usr/local/bin/$LINK_NAME"
   
   fxTitle "🔗 Linking..."
   fxMessage "Script: ${EXECUTABLE}"
