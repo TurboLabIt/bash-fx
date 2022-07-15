@@ -17,10 +17,8 @@ function fxLinkBin()
     fxCatastrophicError "$EXECUTABLE doesn't exist!"
   fi
   
-  fxTitle "🧹 Removing existing $LINK_NAME links..."
-  sudo rm -f "/usr/bin/$LINK_NAME" "/usr/local/bin/$LINK_NAME"
-  
   fxTitle "🔗 Linking..."
+  sudo rm -f "/usr/bin/$LINK_NAME" "/usr/local/bin/$LINK_NAME"
   echo -e "💻 Script:\t ${EXECUTABLE}"
   echo -e "🔗 Link:\t ${LINK_NAME}"
   sudo ln -s "$EXECUTABLE" "/usr/local/bin/$LINK_NAME"
