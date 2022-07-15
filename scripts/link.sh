@@ -2,8 +2,8 @@
 
 function fxLinkBin()
 {
-  EXECUTABLE=$1
-  LINK_NAME=$2
+  local EXECUTABLE=$1
+  local LINK_NAME=$2
   
   if [ -z "$LINK_NAME" ]; then
     LINK_NAME=$(basename "$EXECUTABLE" .sh)
