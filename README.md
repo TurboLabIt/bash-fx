@@ -36,12 +36,12 @@ curl -s https://raw.githubusercontent.com/TurboLabIt/bash-fx/master/setup.sh?$(d
 source /usr/local/turbolab.it/bash-fx/bash-fx.sh
 ## bash-fx is ready
 
-sudo bash /usr/local/turbolab.it/bash-fx/setup/begin.sh ${SCRIPT_NAME}
+sudo bash /usr/local/turbolab.it/bash-fx/setup/start.sh ${SCRIPT_NAME}
 fxLinkBin ${INSTALL_DIR}${SCRIPT_NAME}.sh
 
 ## ... other stuff ...
 
-sudo bash /usr/local/turbolab.it/bash-fx/setup/end.sh ${SCRIPT_NAME}
+sudo bash /usr/local/turbolab.it/bash-fx/setup/the-end.sh ${SCRIPT_NAME}
 
 ````
 
