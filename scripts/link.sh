@@ -21,7 +21,7 @@ function fxLinkBin()
   sudo rm -f "/usr/bin/$LINK_NAME" "/usr/local/bin/$LINK_NAME"
   
   fxTitle "🔗 Linking..."
-  echo "Script:\t ${EXECUTABLE}"
-  echo "Link:\t ${LINK_NAME}"
+  echo -e "Script:\t ${EXECUTABLE}"
+  echo -e "Link:\t ${LINK_NAME}"
   sudo ln -s "$EXECUTABLE" "/usr/local/bin/$LINK_NAME"
 }
