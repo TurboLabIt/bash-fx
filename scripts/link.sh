@@ -14,14 +14,14 @@ function fxLinkBin()
   fi
   
   if [ ! -f "$EXECUTABLE" ]; then
-    fxCatastrophicError "$1 doesn't exist!"
+    fxCatastrophicError "$EXECUTABLE doesn't exist!"
   fi
   
-  fxTitle "🧹 Removing existing $2 links..."
+  fxTitle "🧹 Removing existing $LINK_NAME links..."
   sudo rm -f "/usr/bin/$2" "/usr/local/bin/$2"
   
   fxTitle "🔗 Linking..."
   fxMessage "Script: ${EXECUTABLE}"
   fxMessage "Script: ${LINK_NAME}"
-  sudo ln -s "$1" "/usr/local/bin/$2"
+  sudo ln -s "$EXECUTABLE" "/usr/local/bin/$LINK_NAME"
 }
