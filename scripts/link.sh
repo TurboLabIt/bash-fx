@@ -18,10 +18,10 @@ function fxLinkBin()
   fi
   
   fxTitle "🧹 Removing existing $2 links..."
-  rm -f "/usr/bin/$2" "/usr/local/bin/$2"
+  sudo rm -f "/usr/bin/$2" "/usr/local/bin/$2"
   
   fxTitle "🔗 Linking..."
   fxMessage "Script: ${EXECUTABLE}"
   fxMessage "Script: ${LINK_NAME}"
-  ln -s "$1" "/usr/local/bin/$2"
+  sudo ln -s "$1" "/usr/local/bin/$2"
 }
