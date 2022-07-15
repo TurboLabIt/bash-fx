@@ -1,10 +1,7 @@
 #!/usr/bin/env bash
-
 SCRIPT_NAME=bash-fx
 
-if [ -z "$(command -v curl)" ]; then
-  sudo apt update && sudo apt install curl -y
-fi
+sudo apt update && sudo apt install curl -y
 
 ## begin
 curl -o /tmp/bash-fx-setup-begin.sh -s https://raw.githubusercontent.com/TurboLabIt/bash-fx/main/setup/start.sh
