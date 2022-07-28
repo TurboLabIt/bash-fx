@@ -88,14 +88,6 @@ function fxCatastrophicError()
 }
 
 
-function rootCheck()
-{
-  if ! [ $(id -u) = 0 ]; then
-    fxCatastrophicError "💂 This script must run as ROOT"
-  fi
-}
-
-
 function fxExitOnNonZero()
 {
   if [ "$1" != 0 ]; then
@@ -142,4 +134,4 @@ fxSourceLocalOrRemote "scripts/iptables-plus.sh"
 fxSourceLocalOrRemote "scripts/network.sh"
 fxSourceLocalOrRemote "scripts/hash.sh"
 fxSourceLocalOrRemote "scripts/link.sh"
-
+fxSourceLocalOrRemote "scripts/user.sh"
