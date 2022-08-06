@@ -27,5 +27,37 @@ function fxConfigLoader()
 {
   fxTitle "📋 Reading the config..."
   fxLoadConfigFromInput "$CONFIGFILE_FULLPATH_DEFAULT" "$CONFIGFILE_FULLPATH_ETC" "$CONFIGFILE_FULLPATH_DIR"
+  fxLoadConfigFromInputProfile "$1"
+}
+
+
+function fxLoadConfigFromInputProfile()
+{
+
+  if [ ! -z "$1" ] && [ "$1" != "default" ]; then
+    
+    fxTitle "📋 Profile ${1} requested..."
+    local CONFIGFILE_PROFILE_NAME=${SCRIPT_NAME}-${1}.conf
+
+    local CONFIGFILE_PROFILE_FULLPATH_ETC=/etc/turbolab.it/$CONFIGFILE_PROFILE_NAME
+    local CONFIGFILE_PROFILE_FULLPATH_DIR=${SCRIPT_DIR}$CONFIGFILE_PROFILE_NAME
+    
+    fxLoadConfigFromInput "$CONFIGFILE_PROFILE_FULLPATH_ETC" "$CONFIGFILE_PROFILE_FULLPATH_DIR"
+
+    if [ ! -f "$CONFIGFILE_PROFILE_FULLPATH_ETC" ] && [ ! -f "$CONFIGFILE_PROFILE_FULLPATH_DIR" ]; then
+
+      fxCatastrophicError "Profile config file(s) not found" no-exit
+
+      fxTitle "How to fix it"
+      echo "Create a config file for this profile:"
+      echo ""
+      
+      fxMessage "sudo cp $CONFIGFILE_FULLPATH_DEFAULT $CONFIGFILE_PROFILE_FULLPATH_ETC && sudo nano $CONFIGFILE_PROFILE_FULLPATH_ETC && sudo chmod u=rwx,go=rx /etc/turbolab.it/${SCRIPT_NAME}*"
+
+      fxEndFooter failure
+      exit
+    fi
+
+  fi
 }
 
