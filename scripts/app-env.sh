@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-if [ ! -z "${PROJECT_DIR}" ] && [ -f "${$PROJECT_DIR}env" ]; then
+if [ ! -z "${PROJECT_DIR}" ] && [ -f "${PROJECT_DIR}env" ]; then
 
   APP_ENV=$(head -n 1 ${PROJECT_DIR}env)
 
-elif [ ! -z "${PROJECT_DIR}" ] && [ -d "${$PROJECT_DIR}.git" ]; then
+elif [ ! -z "${PROJECT_DIR}" ] && [ -d "${PROJECT_DIR}.git" ]; then
 
   GIT_BRANCH=$(git -C $PROJECT_DIR branch | grep \* | cut -d ' ' -f2-)
   
@@ -31,4 +31,3 @@ devOnlyCheck ()
     fxCatastrophicError "🧑‍💻 This script can run in the **DEV** environment only! Current env: ##$APP_ENV##"
   fi
 }
-
