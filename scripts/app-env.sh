@@ -6,8 +6,8 @@ if [ ! -z "${PROJECT_DIR}" ] && [ -f "${PROJECT_DIR}env" ]; then
 
 elif [ ! -z "${PROJECT_DIR}" ] && [ -d "${PROJECT_DIR}.git" ]; then
 
+  git config --global --add safe.directory "${PROJECT_DIR}"
   GIT_BRANCH=$(git -C $PROJECT_DIR branch | grep \* | cut -d ' ' -f2-)
-  
 fi
 
 
