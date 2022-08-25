@@ -16,10 +16,9 @@ function fxCountdown()
 
   while [ "$TIMEOUT" -gt 0 ]; do
 
-    echo -ne "\e[1;33m⏳ ${TIMEOUT}\e[0m"
+    echo -ne "\e[1;33m⏳ ${TIMEOUT}\e[0m\033[0K\r"
     sleep 1
     : $((TIMEOUT--))
 
   done
 }
-
