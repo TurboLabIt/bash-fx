@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
 
-if [ -z "$TIME_START" ]; then
-  TIME_START="$(date +%s)"
-  DOWEEK="$(date +'%u')"
-fi
-
 INSTALL_DIR_PARENT="/usr/local/turbolab.it/"
 INSTALL_DIR=${INSTALL_DIR_PARENT}${SCRIPT_NAME}/
 
@@ -129,6 +124,7 @@ function fxSourceLocalOrRemote()
   fi
 }
 
+fxSourceLocalOrRemote "scripts/timer.sh"
 fxSourceLocalOrRemote "scripts/config-loader.sh"
 fxSourceLocalOrRemote "scripts/iptables-plus.sh"
 fxSourceLocalOrRemote "scripts/network.sh"
