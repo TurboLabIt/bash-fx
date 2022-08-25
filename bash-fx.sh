@@ -1,14 +1,17 @@
 #!/usr/bin/env bash
 
-INSTALL_DIR_PARENT="/usr/local/turbolab.it/"
-INSTALL_DIR=${INSTALL_DIR_PARENT}${SCRIPT_NAME}/
+# when the including script is sourced directly from the user shell (zzalias) we cannot use this
+if [ "$0" != 'bash' ] && [ "$0" != '-bash' ]; then
+  SCRIPT_FULLPATH=$(readlink -f "$0")
+  SCRIPT_DIR=$(dirname "$SCRIPT_FULLPATH")/
+fi
 
-SCRIPT_FULLPATH=$(readlink -f "$0")
-SCRIPT_DIR=$(dirname "$SCRIPT_FULLPATH")/
-
-if [ -z "$SCRIPT_NAME" ]; then
+if [ $0" != 'bash' ] && [ $0" != '-bash' ] && [ -z "$SCRIPT_NAME" ]; then
   SCRIPT_NAME=$(basename "$SCRIPT_FULLPATH" .sh)
 fi
+
+INSTALL_DIR_PARENT=/usr/local/turbolab.it/
+INSTALL_DIR=${INSTALL_DIR_PARENT}${SCRIPT_NAME}/
 
 BASHFX_INSTALL_DIR="/usr/local/turbolab.it/bash-fx/"
 
