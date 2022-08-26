@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 SCRIPT_NAME=$1
 
-if [ -z "$(command -v curl)" ]; then
-  sudo apt update && sudo apt install curl -y
+if [ -z "$(command -v curl)" ] || [ -z "$(command -v nano)" ] || [ -z "$(command -v dialog)" ]; then
+  sudo apt update && sudo apt install curl nano dialog -y
 fi
 
 ## bash-fx
