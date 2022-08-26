@@ -25,9 +25,32 @@ elif [ "$GIT_BRANCH" = "dev" ] || [[ "$GIT_BRANCH" = "dev-"* ]]; then
 fi
 
 
-devOnlyCheck ()
+function devOnlyCheck()
 {
   if [ "$APP_ENV" != "dev" ]; then
     fxCatastrophicError "🧑‍💻 This script can run in the **DEV** environment only! Current env: ##$APP_ENV##"
   fi
+}
+
+function fxContainerDetection()
+{
+  local SILENT_MODE=$1
+  
+  if [ -z "$SILENT_MODE" ]; then
+   fxTitle "🐋 Checking if the app is running in a container..."
+  fi
+  
+  if [ -f "/.dockerenv" ]; then
+    local IS_CONTAINER=1
+  else
+    local IS_CONTAINER=0
+  fi
+
+  if [ "$IS_CONTAINER" = 1 ] && [ -z "$SILENT_MODE" ]; then
+    fxMessage "✔️ Yes, container detected"
+  elif [ "$IS_CONTAINER" = 0 ] && [ -z "$SILENT_MODE" ]; then
+    fxMessage "🕳️ No container detected"
+  fi
+  
+  return $IS_CONTAINER
 }
