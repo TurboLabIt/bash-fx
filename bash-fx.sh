@@ -48,6 +48,12 @@ function fxMessage()
 }
 
 
+function fxInfo()
+{
+  echo -e "\e[1;34mℹ️ ${1}\e[0m"
+}
+
+
 function fxOK()
 {
   local MESSAGE=$1
