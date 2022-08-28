@@ -8,6 +8,8 @@ A collection of common Bash functions and variables
 At the top of the script:
 
 ````bash
+#!/usr/bin/env bash
+
 ## bash-fx
 if [ -f "/usr/local/turbolab.it/bash-fx/bash-fx.sh" ]; then
   source "/usr/local/turbolab.it/bash-fx/bash-fx.sh"
@@ -18,6 +20,11 @@ fi
 
 fxHeader "MY SCRIPT NAME"
 rootCheck
+
+...
+
+fxEndFooter
+
 ````
 
 
