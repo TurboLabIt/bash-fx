@@ -9,6 +9,8 @@ A collection of common Bash functions and variables
 #!/usr/bin/env bash
 
 ## bash-fx
+if [ -z $(command -v curl) ]; then sudo apt update && sudo apt install curl -y; fi
+
 if [ -f "/usr/local/turbolab.it/bash-fx/bash-fx.sh" ]; then
   source "/usr/local/turbolab.it/bash-fx/bash-fx.sh"
 else
@@ -32,10 +34,13 @@ fxEndFooter
 #!/usr/bin/env bash
 
 ## bash-fx
+if [ -z $(command -v curl) ]; then sudo apt update && sudo apt install curl -y; fi
+
 if [ ! -f "/usr/local/turbolab.it/bash-fx/bash-fx.sh" ]; then
   sudo apt update && sudo apt install curl -y
   curl -s https://raw.githubusercontent.com/TurboLabIt/bash-fx/master/setup.sh?$(date +%s) | sudo bash
 fi
+
 source /usr/local/turbolab.it/bash-fx/bash-fx.sh
 ## bash-fx is ready
 
@@ -47,12 +52,6 @@ rootCheck
 fxEndFooter
 
 ````
-
-
-
-
-
-
 
 
 # How to create a setup.sh
