@@ -27,7 +27,6 @@ fxEndFooter
 
 ````
 
-
 # Option 2: Install and run
 
 ````bash
@@ -35,12 +34,7 @@ fxEndFooter
 
 ## bash-fx
 if [ -z $(command -v curl) ]; then sudo apt update && sudo apt install curl -y; fi
-
-if [ ! -f "/usr/local/turbolab.it/bash-fx/bash-fx.sh" ]; then
-  sudo apt update && sudo apt install curl -y
-  curl -s https://raw.githubusercontent.com/TurboLabIt/bash-fx/master/setup.sh?$(date +%s) | sudo bash
-fi
-
+if [ ! -f "/usr/local/turbolab.it/bash-fx/bash-fx.sh" ]; then curl -s https://raw.githubusercontent.com/TurboLabIt/bash-fx/master/setup.sh?$(date +%s) | sudo bash; fi
 source /usr/local/turbolab.it/bash-fx/bash-fx.sh
 ## bash-fx is ready
 
