@@ -134,6 +134,7 @@ function fxSourceLocalOrRemote()
 }
 
 fxSourceLocalOrRemote "scripts/timer.sh"
+fxSourceLocalOrRemote "scripts/validators.sh"
 fxSourceLocalOrRemote "scripts/config-loader.sh"
 fxSourceLocalOrRemote "scripts/iptables-plus.sh"
 fxSourceLocalOrRemote "scripts/network.sh"
@@ -141,3 +142,4 @@ fxSourceLocalOrRemote "scripts/hash.sh"
 fxSourceLocalOrRemote "scripts/link.sh"
 fxSourceLocalOrRemote "scripts/user.sh"
 fxSourceLocalOrRemote "scripts/app-env.sh"
+fxSourceLocalOrRemote "scripts/app-installer.sh"
