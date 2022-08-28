@@ -3,9 +3,7 @@
 A collection of common Bash functions and variables
 
 
-# Usage
-
-At the top of the script:
+# Option 1: Run from local or remote
 
 ````bash
 #!/usr/bin/env bash
@@ -26,6 +24,35 @@ rootCheck
 fxEndFooter
 
 ````
+
+
+# Option 2: Install and run
+
+````bash
+#!/usr/bin/env bash
+
+## bash-fx
+if [ ! -f "/usr/local/turbolab.it/bash-fx/bash-fx.sh" ]; then
+  sudo apt update && sudo apt install curl -y
+  curl -s https://raw.githubusercontent.com/TurboLabIt/bash-fx/master/setup.sh?$(date +%s) | sudo bash
+fi
+source /usr/local/turbolab.it/bash-fx/bash-fx.sh
+## bash-fx is ready
+
+fxHeader "MY SCRIPT NAME"
+rootCheck
+
+...
+
+fxEndFooter
+
+````
+
+
+
+
+
+
 
 
 # How to create a setup.sh
