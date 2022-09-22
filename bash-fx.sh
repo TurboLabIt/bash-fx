@@ -115,6 +115,14 @@ function fxEndFooter()
   echo "🏁 The End 🏁"
   printf '%0.s=' $(seq 0 $CHAR_NUM)
   echo ""
+  
+  if [ -z $INITIAL_DIR ]; then
+    fxTitle "Switching back to $INITIAL_DIR"
+    cd $INITIAL_DIR
+    pwd
+    echo ""
+  fi
+  
   echo "$(date) on $(hostname)"
   echo "Total time: $((($(date +%s)-$TIME_START)/60)) min."
   echo -e "\e[0m"
