@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 SCRIPT_NAME=bash-fx
 
+## stop needrestart https://askubuntu.com/a/1421221/181869
+if [ -e "/etc/needrestart/needrestart.conf" ]; then
+  sudo sed -i 's/#$nrconf{restart} = '"'"'i'"'"';/$nrconf{restart} = '"'"'a'"'"';/g' /etc/needrestart/needrestart.conf
+fi
+
 if [ -z $(command -v curl) ]; then sudo apt update && sudo apt install curl -y; fi
 
 ## begin
