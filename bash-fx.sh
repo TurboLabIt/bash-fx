@@ -102,11 +102,10 @@ function fxExitOnNonZero()
 
 function fxEndFooter()
 {
-  if [ -z $INITIAL_DIR ]; then
+  if [ ! -z "$INITIAL_DIR" ]; then
     fxTitle "Switching back to $INITIAL_DIR"
-    cd $INITIAL_DIR
+    cd "$INITIAL_DIR"
     pwd
-    echo ""
   fi
 
   local CHAR_NUM=20
