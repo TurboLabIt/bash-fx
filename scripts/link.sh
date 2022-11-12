@@ -14,7 +14,11 @@ function fxLink()
   fi
   
   fxTitle "🔗 Linking..."
-  sudo rm -f "${LINK_FULLPATH}"
+  
+  if [ -L "${LINK_FULLPATH}" ]; then
+    sudo rm -f "${LINK_FULLPATH}"
+  fi
+  
   echo "💻 Target: ${TARGET_FULLPATH}"
   echo "🔗 Link:   ${LINK_FULLPATH}"
   sudo ln -s "${TARGET_FULLPATH}" "${LINK_FULLPATH}"
