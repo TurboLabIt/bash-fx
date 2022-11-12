@@ -1,5 +1,26 @@
 #!/usr/bin/env bash
 
+function fxLink()
+{
+  local TARGET_FULLPATH=$1
+  local LINK_FULLPATH=$2
+  
+  if [ -z "$TARGET_FULLPATH" ] || [ -z "$LINK_FULLPATH" ]; then
+    fxCatastrophicError "fxLink usage: pathOfTheExistingTarget pathOfTheLink"
+  fi
+  
+  if [ ! -e "$TARGET_FULLPATH" ]; then
+    fxCatastrophicError "fxLink ##${TARGET_FULLPATH}## doesn't exist!"
+  fi
+  
+  fxTitle "🔗 Linking..."
+  sudo rm -f "${LINK_FULLPATH}"
+  echo "💻 Target: ${TARGET_FULLPATH}"
+  echo "🔗 Link:   ${LINK_FULLPATH}"
+  sudo ln -s "${TARGET_FULLPATH}" "${LINK_FULLPATH}"
+}
+
+
 function fxLinkBin()
 {
   local EXECUTABLE=$1
@@ -17,11 +38,8 @@ function fxLinkBin()
     fxCatastrophicError "$EXECUTABLE doesn't exist!"
   fi
   
-  fxTitle "🔗 Linking..."
   sudo rm -f "/usr/bin/$LINK_NAME" "/usr/local/bin/$LINK_NAME"
-  echo "💻 Script: ${EXECUTABLE}"
-  echo "🔗 Link:   ${LINK_NAME}"
-  sudo ln -s "$EXECUTABLE" "/usr/local/bin/$LINK_NAME"
+  fxLink "$EXECUTABLE" "/usr/local/bin/$LINK_NAME"
 }
 
 
