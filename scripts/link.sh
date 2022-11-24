@@ -13,7 +13,7 @@ function fxLink()
     fxCatastrophicError "fxLink ##${TARGET_FULLPATH}## doesn't exist!"
   fi
   
-  fxTitle "🔗 Linking..."
+  fxInfo "🔗 Linking..."
   
   if [ -L "${LINK_FULLPATH}" ]; then
     sudo rm -f "${LINK_FULLPATH}"
