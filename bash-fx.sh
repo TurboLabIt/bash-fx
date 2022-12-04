@@ -15,6 +15,12 @@ INSTALL_DIR=${INSTALL_DIR_PARENT}${SCRIPT_NAME}/
 
 BASHFX_INSTALL_DIR="/usr/local/turbolab.it/bash-fx/"
 
+function fxDate()
+{
+  date +"%T | %A, %B %d, %Y on $(hostname)"
+}
+
+
 function fxHeader()
 {
   local CHAR_NUM=${#1}
@@ -25,7 +31,7 @@ function fxHeader()
   echo "${1}"
   printf '%0.s=' $(seq 0 $CHAR_NUM)
   echo ""
-  echo "$(date) on $(hostname)"
+  fxDate
   echo -e "\e[0m"
 }
 
@@ -122,7 +128,7 @@ function fxEndFooter()
   printf '%0.s=' $(seq 0 $CHAR_NUM)
   echo ""
   
-  echo "$(date) on $(hostname)"
+  fxDate
   echo "Total time: $((($(date +%s)-$TIME_START)/60)) min."
   echo -e "\e[0m"
   echo ""
