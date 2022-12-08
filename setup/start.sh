@@ -37,4 +37,5 @@ else
 fi
 
 cd "$INSTALL_DIR"
+git reset --hard
 git pull --no-rebase
