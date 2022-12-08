@@ -85,5 +85,5 @@ fxReplaceLinkWithCopy()
   
   cp -L "${LINK_TO_REPLACE}" "/tmp/"
   rm -f "${LINK_TO_REPLACE}"
-  mv "info@turbolab.itp/$(basename ${LINK_TO_REPLACE})" "${LINK_TO_REPLACE}"
+  mv "/tmp/$(basename ${LINK_TO_REPLACE})" "${LINK_TO_REPLACE}"
 }
