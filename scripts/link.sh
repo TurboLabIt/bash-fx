@@ -65,3 +65,25 @@ function fxCopyCron()
   sudo chown root:root "${DEST_CRON_FILE_PATH}"
   sudo chmod u=rw,go= "${DEST_CRON_FILE_PATH}"
 }
+
+
+fxReplaceLinkWithCopy()
+{
+  local LINK_TO_REPLACE=$1
+  if [ ! -e "$LINK_TO_REPLACE" ]; then
+    fxCatastrophicError "fxReplaceLinkWithCopy: file ##${LINK_TO_REPLACE}## doesn't exist!"
+  fi
+  
+  if [ ! -L "$LINK_TO_REPLACE" ]; then
+    
+    fxWarning "fxReplaceLinkWithCopy: ##${LINK_TO_REPLACE}## is NOT a link! Nothing to do here!"
+    return 1
+  fi
+  
+  fxInfo "♻ Replacing link with a copy..."
+  echo "🎯 Working on: ${LINK_TO_REPLACE}"
+  
+  cp -L "${LINK_TO_REPLACE}" "/tmp/"
+  rm -f "${LINK_TO_REPLACE}"
+  mv "info@turbolab.itp/$(basename ${LINK_TO_REPLACE})" "${LINK_TO_REPLACE}"
+}
