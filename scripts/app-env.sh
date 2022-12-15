@@ -32,6 +32,7 @@ function devOnlyCheck()
   fi
 }
 
+
 function fxContainerDetection()
 {
   local SILENT_MODE=$1
@@ -53,4 +54,11 @@ function fxContainerDetection()
   fi
   
   return $IS_CONTAINER
+}
+
+
+function fxCtrlConce()
+{
+  ## kill the whole script on Ctrl+C
+  trap "exit" INT
 }
