@@ -17,7 +17,7 @@ BASHFX_INSTALL_DIR="/usr/local/turbolab.it/bash-fx/"
 
 function fxDate()
 {
-  date +"%T | %A, %B %d, %Y on $(hostname)"
+  date +"🗓️ %T | %A, %B %d, %Y on $(hostname)"
 }
 
 
@@ -32,6 +32,9 @@ function fxHeader()
   printf '%0.s=' $(seq 0 $CHAR_NUM)
   echo ""
   fxDate
+  if [ ! -z "${APP_ENV}" ]; then
+    echo "🌳 Env: ${APP_ENV}"
+  fi
   echo -e "\e[0m"
 }
 
