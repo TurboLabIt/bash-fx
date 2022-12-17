@@ -37,14 +37,24 @@ function fxLoadConfigFromInputProfile()
   if [ ! -z "$1" ] && [ "$1" != "default" ]; then
     
     fxTitle "📋 Profile ${1} requested..."
+    
+    ## new naming format: appname-profilename
     local CONFIGFILE_PROFILE_NAME=${SCRIPT_NAME}-${1}.conf
-
     local CONFIGFILE_PROFILE_FULLPATH_ETC=/etc/turbolab.it/$CONFIGFILE_PROFILE_NAME
     local CONFIGFILE_PROFILE_FULLPATH_DIR=${SCRIPT_DIR}$CONFIGFILE_PROFILE_NAME
     
-    fxLoadConfigFromInput "$CONFIGFILE_PROFILE_FULLPATH_ETC" "$CONFIGFILE_PROFILE_FULLPATH_DIR"
+    ## legacy naming format: appname.profile.profilename
+    local CONFIGFILE_LEGACYPROFILE_NAME=${SCRIPT_NAME}.profile.${1}.conf
+    local CONFIGFILE_LEGACYPROFILE_FULLPATH_ETC=/etc/turbolab.it/$CONFIGFILE_PROFILE_NAME
+    local CONFIGFILE_LEGACYPROFILE_FULLPATH_DIR=${SCRIPT_DIR}$CONFIGFILE_PROFILE_NAME
+    
+    fxLoadConfigFromInput \
+      "$CONFIGFILE_PROFILE_FULLPATH_ETC" "$CONFIGFILE_PROFILE_FULLPATH_DIR" \
+      "$CONFIGFILE_LEGACYPROFILE_FULLPATH_ETC" "$CONFIGFILE_LEGACYPROFILE_FULLPATH_DIR"
 
-    if [ ! -f "$CONFIGFILE_PROFILE_FULLPATH_ETC" ] && [ ! -f "$CONFIGFILE_PROFILE_FULLPATH_DIR" ]; then
+    if \
+      [ ! -f "$CONFIGFILE_PROFILE_FULLPATH_ETC" ] && [ ! -f "$CONFIGFILE_PROFILE_FULLPATH_DIR" ] \
+      [ ! -f "$CONFIGFILE_LEGACYPROFILE_FULLPATH_ETC" ] && [ ! -f "$CONFIGFILE_LEGACYPROFILE_FULLPATH_DIR" ] \; then
 
       fxCatastrophicError "Profile config file(s) not found" no-exit
 
@@ -60,4 +70,3 @@ function fxLoadConfigFromInputProfile()
 
   fi
 }
-
