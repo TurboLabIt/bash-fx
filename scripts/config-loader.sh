@@ -53,7 +53,7 @@ function fxLoadConfigFromInputProfile()
       "$CONFIGFILE_LEGACYPROFILE_FULLPATH_ETC" "$CONFIGFILE_LEGACYPROFILE_FULLPATH_DIR"
 
     if \
-      [ ! -f "$CONFIGFILE_PROFILE_FULLPATH_ETC" ] && [ ! -f "$CONFIGFILE_PROFILE_FULLPATH_DIR" ] \
+      [ ! -f "$CONFIGFILE_PROFILE_FULLPATH_ETC" ] && [ ! -f "$CONFIGFILE_PROFILE_FULLPATH_DIR" ] && \
       [ ! -f "$CONFIGFILE_LEGACYPROFILE_FULLPATH_ETC" ] && [ ! -f "$CONFIGFILE_LEGACYPROFILE_FULLPATH_DIR" ]; then
 
       fxCatastrophicError "Profile config file(s) not found" no-exit
