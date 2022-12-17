@@ -8,8 +8,8 @@ CONFIGFILE_FULLPATH_DIR=${SCRIPT_DIR}${CONFIGFILE_NAME}
 
 function fxLoadConfigFromInput()
 {
-  for CONFIGFILE_FULLPATH in "$@"
-  do
+  for CONFIGFILE_FULLPATH in "$@"; do
+  
     if [ -f "$CONFIGFILE_FULLPATH" ]; then
     
       fxMessage "✅ $CONFIGFILE_FULLPATH"
@@ -26,7 +26,7 @@ function fxLoadConfigFromInput()
 function fxConfigLoader()
 {
   fxTitle "📋 Reading the config..."
-  fxLoadConfigFromInput "$CONFIGFILE_FULLPATH_DEFAULT" "$CONFIGFILE_FULLPATH_ETC" "$CONFIGFILE_FULLPATH_DIR"
+  fxLoadConfigFromInput "$CONFIGFILE_FULLPATH_DEFAULT" "$CONFIGFILE_FULLPATH_ETC" "$CONFIGFILE_FULLPATH_DIR" "/etc/turbolab.it/mysql.conf"
   fxLoadConfigFromInputProfile "$1"
 }
 
