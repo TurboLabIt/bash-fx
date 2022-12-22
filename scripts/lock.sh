@@ -2,7 +2,16 @@
 
 function lockCheck()
 {
-  local LOCKFILE=${1}.lock
+  fxTitle "🔒 Checking lockfile..."
+
+  if [ "${1:0:1}" = "/" ]; then
+    local LOCKFILE=$1.lock
+  else
+    local $LOCKFILE=/tmp/$1.lock
+  fi
+  
+  fxInfo "Lock file path: ##${LOCKFILE}##"
+
   if [ -z "$2" ]; then
     LOCKFILE_TIMEOUT=120
   else
@@ -24,19 +33,30 @@ function lockCheck()
     exit
   fi
 
-  fxTitle "🔒 Creating lockfile in ##${LOCKFILE}##"
+  fxTitle "🔒 Creating lockfile in ##${LOCKFILE}##..."
   touch "$LOCKFILE"
 }
 
 
 function removeLock()
 {
-  local LOCKFILE=${1}.lock
+  fxTitle "🔓 Removing lockfile..."
+  
+  if [ "${1:0:1}" = "/" ]; then
+    local LOCKFILE=$1.lock
+  else
+    local $LOCKFILE=/tmp/$1.lock
+  fi
+  
+  fxInfo "Lock file path: ##${LOCKFILE}##"
   
   if [ -f "${LOCKFILE}" ]; then
   
-    fxTitle "🔓 Removing lockfile in ##${LOCKFILE}##"
     rm "${LOCKFILE}"
-    fxMessage "${LOCKFILE} deleted"
+    fxOK "${LOCKFILE} deleted"
+    
+  else
+  
+    fxInfo "No lockfile detected"
   fi
 }
