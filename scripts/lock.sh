@@ -9,14 +9,14 @@ function lockCheck()
   else
     local $LOCKFILE=/tmp/$1.lock
   fi
-  
-  fxInfo "Lock file path: ##${LOCKFILE}##"
 
   if [ -z "$2" ]; then
     local LOCKFILE_TIMEOUT=120
   else
     local LOCKFILE_TIMEOUT=$2
-  fi 
+  fi
+  
+  fxInfo "Lockfile path: ##${LOCKFILE}## | Lock life: ${LOCKFILE_TIMEOUT}"
 
   if [ -f "${LOCKFILE}" ] && [ ! -z `find "${LOCKFILE}" -mmin -${LOCKFILE_TIMEOUT}` ]; then
   
