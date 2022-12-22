@@ -7,7 +7,7 @@ function lockCheck()
   if [ "${1:0:1}" = "/" ]; then
     local LOCKFILE=$1.lock
   else
-    local $LOCKFILE=/tmp/$1.lock
+    local LOCKFILE=/tmp/$1.lock
   fi
 
   if [ -z "$2" ]; then
