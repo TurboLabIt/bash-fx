@@ -13,9 +13,9 @@ function lockCheck()
   fxInfo "Lock file path: ##${LOCKFILE}##"
 
   if [ -z "$2" ]; then
-    LOCKFILE_TIMEOUT=120
+    local LOCKFILE_TIMEOUT=120
   else
-    LOCKFILE_TIMEOUT=$2
+    local LOCKFILE_TIMEOUT=$2
   fi 
 
   if [ -f "${LOCKFILE}" ] && [ ! -z `find "${LOCKFILE}" -mmin -${LOCKFILE_TIMEOUT}` ]; then
