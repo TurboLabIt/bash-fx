@@ -14,3 +14,18 @@ function expectedUserSetCheck()
     fxCatastrophicError "🤷‍♂️ EXPECTED_USER not set"
   fi
 }
+
+
+function fxGetFileOwner()
+{
+  if [ -z "$1" ]; then
+    fxCatastrophicError "fxGetFileOwner: you must provide the file/directory to check"
+  fi
+  
+  if [ ! -e "$1" ]; then
+    echo ''
+    return 0
+  fi
+  
+  stat -c '%U' "$1"
+}
