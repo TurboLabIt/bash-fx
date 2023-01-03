@@ -23,6 +23,7 @@ fxSshCheckRemoteDirectory()
   fxTitle "🔭 Checking directory..."
   echo "🖥 Server:    ##$1##"
   echo "📂 Dir:      ##$2##"
+  echo ""
   
   ssh -t $1 "[ -d $2 ]"
   
@@ -30,6 +31,7 @@ fxSshCheckRemoteDirectory()
     fxCatastrophicError "Directory test FAILED"
   fi
   
+  echo ""
   fxOK "Yes, it exists!"
   
   fxTitle "📂 Remote listing..."
