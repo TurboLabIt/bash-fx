@@ -20,15 +20,17 @@ fxSshCheckRemoteDirectory()
     fxCatastrophicError "fxSshTestRemoteDirectory: you must provide these arguments: user@server /path/to/test/"
   fi
 
-  fxTitle "🔭 Checking if ##$2## exists on ##$1##..."
+  fxTitle "🔭 Checking directory..."
+  echo "🖥 Server:    ##1##"
+  echo "📂 Dir:       ##2##"
   
   ssh -t $1 "[ -d $2 ]"
   
   if [ "$?" != 0 ]; then
-    fxCatastrophicError "##$2## doesn't exists on ##$1##"
+    fxCatastrophicError "Directory test FAILED"
   fi
   
-  fxOK "Yes, ##$2## exists on ##$1##!"
+  fxOK "Yes, it exists!"
   
   fxTitle "📂 Remote listing..."
   ssh -t $1 "ls -lah $2"
