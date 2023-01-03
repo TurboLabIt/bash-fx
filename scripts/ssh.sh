@@ -28,7 +28,7 @@ fxSshCheckRemoteDirectory()
   ssh -t $1 "[ -d $2 ]"
   
   if [ "$?" != 0 ]; then
-    fxCatastrophicError "Directory test FAILED"
+    fxCatastrophicError "Remote directory check FAILED"
   fi
   
   echo ""
