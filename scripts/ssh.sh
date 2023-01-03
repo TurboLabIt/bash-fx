@@ -35,5 +35,5 @@ fxSshCheckRemoteDirectory()
   fxOK "Yes, it exists!"
   
   fxTitle "📂 Remote listing..."
-  ssh -t $1 "ls -lah $2"
+  ssh -t $1 "ls -lah --color $2"
 }
