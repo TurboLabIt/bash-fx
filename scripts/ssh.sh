@@ -21,8 +21,8 @@ fxSshCheckRemoteDirectory()
   fi
 
   fxTitle "🔭 Checking directory..."
-  echo "🖥 Server:    ##1##"
-  echo "📂 Dir:       ##2##"
+  echo "🖥 Server:    ##$1##"
+  echo "📂 Dir:      ##$2##"
   
   ssh -t $1 "[ -d $2 ]"
   
