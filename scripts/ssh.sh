@@ -27,4 +27,9 @@ fxSshCheckRemoteDirectory()
   if [ "$?" != 0 ]; then
     fxCatastrophicError "##$2## doesn't exists on ##$1##"
   fi
+  
+  fxOK "Yes, ##$2## exists on ##$1##!"
+  
+  fxTitle "📂 Remote listing..."
+  ssh -t $1 "ls -lah $2"
 }
