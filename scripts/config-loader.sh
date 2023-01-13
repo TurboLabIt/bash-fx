@@ -1,10 +1,6 @@
 #!/usr/bin/env bash
-
-CONFIGFILE_FULLPATH_DEFAULT=${SCRIPT_DIR}${SCRIPT_NAME}.default.conf
-CONFIGFILE_NAME=${SCRIPT_NAME}.conf
-CONFIGFILE_FULLPATH_ETC=/etc/turbolab.it/$CONFIGFILE_NAME
-CONFIGFILE_FULLPATH_DIR=${SCRIPT_DIR}${CONFIGFILE_NAME}
-
+CONFIGFILE_FULLPATH_DEFAULT=/usr/local/turbolab.it/${SCRIPT_NAME}/${SCRIPT_NAME}.default.conf
+CONFIGFILE_FULLPATH_ETC=/etc/turbolab.it/${SCRIPT_NAME}.conf
 
 function fxLoadConfigFromInput()
 {
@@ -26,7 +22,7 @@ function fxLoadConfigFromInput()
 function fxConfigLoader()
 {
   fxTitle "📋 Reading the config..."
-  fxLoadConfigFromInput "$CONFIGFILE_FULLPATH_DEFAULT" "$CONFIGFILE_FULLPATH_ETC" "$CONFIGFILE_FULLPATH_DIR" "/etc/turbolab.it/mysql.conf"
+  fxLoadConfigFromInput "$CONFIGFILE_FULLPATH_DEFAULT" "$CONFIGFILE_FULLPATH_ETC" "/etc/turbolab.it/mysql.conf"
   fxLoadConfigFromInputProfile "$1"
 }
 
@@ -39,14 +35,12 @@ function fxLoadConfigFromInputProfile()
     fxTitle "📋 Profile ${1} requested..."
     
     ## new naming format: appname-profilename
-    local CONFIGFILE_PROFILE_NAME=${SCRIPT_NAME}-${1}.conf
-    local CONFIGFILE_PROFILE_FULLPATH_ETC=/etc/turbolab.it/$CONFIGFILE_PROFILE_NAME
-    local CONFIGFILE_PROFILE_FULLPATH_DIR=${SCRIPT_DIR}$CONFIGFILE_PROFILE_NAME
+    local CONFIGFILE_PROFILE_FULLPATH_ETC=/etc/turbolab.it/${SCRIPT_NAME}-${1}.conf
+    local CONFIGFILE_PROFILE_FULLPATH_DIR=/usr/local/turbolab.it/${SCRIPT_NAME}/${SCRIPT_NAME}-${1}.conf
     
     ## legacy naming format: appname.profile.profilename
-    local CONFIGFILE_LEGACYPROFILE_NAME=${SCRIPT_NAME}.profile.${1}.conf
-    local CONFIGFILE_LEGACYPROFILE_FULLPATH_ETC=/etc/turbolab.it/$CONFIGFILE_LEGACYPROFILE_NAME
-    local CONFIGFILE_LEGACYPROFILE_FULLPATH_DIR=${SCRIPT_DIR}$CONFIGFILE_LEGACYPROFILE_NAME
+    local CONFIGFILE_LEGACYPROFILE_FULLPATH_ETC=/etc/turbolab.it/${SCRIPT_NAME}.profile.${1}.conf
+    local CONFIGFILE_LEGACYPROFILE_FULLPATH_DIR=/usr/local/turbolab.it/${SCRIPT_NAME}/${SCRIPT_NAME}.profile.${1}.conf
     
     fxLoadConfigFromInput \
       "$CONFIGFILE_PROFILE_FULLPATH_ETC" "$CONFIGFILE_PROFILE_FULLPATH_DIR" \
