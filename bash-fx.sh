@@ -6,7 +6,7 @@ if [ "$0" != 'bash' ] && [ "$0" != '-bash' ]; then
   SCRIPT_DIR=$(dirname "$SCRIPT_FULLPATH")/
 fi
 
-if [ $0" != 'bash' ] && [ $0" != '-bash' ] && [ -z "$SCRIPT_NAME" ]; then
+if [ "$0" != 'bash' ] && [ "$0" != '-bash' ] && [ -z "$SCRIPT_NAME" ]; then
   SCRIPT_NAME=$(basename "$SCRIPT_FULLPATH" .sh)
 fi
 
