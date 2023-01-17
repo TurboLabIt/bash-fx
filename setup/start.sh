@@ -15,6 +15,9 @@ fi
 
 fxHeader "💽 ${SCRIPT_NAME} setup script"
 
+fxTitle "Suppress needrestart..."
+sudo curl -Lo /etc/needrestart/conf.d/zzupdate-needrestart-suppress.conf https://raw.githubusercontent.com/TurboLabIt/zzupdate/master/needrestart-suppress.conf?$(date +%s)
+
 if [ -z "$(command -v git)" ]; then
   sudo apt update && sudo apt install git -y
 fi
