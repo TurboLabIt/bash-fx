@@ -29,3 +29,8 @@ function fxGetFileOwner()
   
   stat -c '%U' "$1"
 }
+
+fxPasswordGenerator()
+{
+  echo "$(head /dev/urandom | tr -dc 'A-Za-z0-9' | head -c 19)"
+}
