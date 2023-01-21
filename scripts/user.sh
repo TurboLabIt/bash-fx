@@ -30,7 +30,18 @@ function fxGetFileOwner()
   stat -c '%U' "$1"
 }
 
-fxPasswordGenerator()
+
+function fxPasswordGenerator()
 {
   echo "$(head /dev/urandom | tr -dc 'A-Za-z0-9' | head -c 19)"
+}
+
+
+function fxPasswordHide()
+{
+  local PASSWORD=$1
+  
+  if [ -z "${PASSWORD}" ]; then
+    echo "${PASSWORD:0:2}**...**${PASSWORD: -2}"
+  fi
 }
