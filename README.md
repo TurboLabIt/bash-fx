@@ -7,6 +7,8 @@ A collection of common Bash functions and variables
 
 ````bash
 #!/usr/bin/env bash
+echo ""
+SCRIPT_NAME=sample-script-name
 
 ## bash-fx
 if [ -z $(command -v curl) ]; then sudo apt update && sudo apt install curl -y; fi
@@ -18,8 +20,9 @@ else
 fi
 ## bash-fx is ready
 
-fxHeader "MY SCRIPT NAME"
+fxHeader "🚀 ${SCRIPT_NAME}"
 rootCheck
+fxConfigLoader "$1"
 
 ...
 
