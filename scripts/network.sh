@@ -20,8 +20,8 @@ function fxCheckIpAddressChanged()
 {
   fxTitle "🧭 Checking if the IP address has changed..."
 
-  FX_NEW_IP_ADDRESS=""
   fxGetCurrentIpAddress
+  FX_NEW_IP_ADDRESS=${FX_CURRENT_IP_ADDRESS}
 
 
   fxTitle "IP file..."
@@ -38,12 +38,10 @@ function fxCheckIpAddressChanged()
   if [ ! -f "$IP_FILE" ]; then
 
     fxWarning "IP file ##${IP_FILE}## not found. The IP address should be considered as changed"
-    FX_NEW_IP_ADDRESS=${FX_CURRENT_IP_ADDRESS}
 
     ## create the file with permissive permissions
     touch "${IP_FILE}"
     chmod ugo=rw "${IP_FILE}"
-
     return 1
 
   else
@@ -56,7 +54,6 @@ function fxCheckIpAddressChanged()
   if [ $(find "$IP_FILE" -mmin +90 -print) ]; then
 
     fxWarning "The IP file ##${IP_FILE}## is pretty old. The IP address should be considered as changed"
-    FX_NEW_IP_ADDRESS=${FX_CURRENT_IP_ADDRESS}
     return 1
 
   else
@@ -73,9 +70,11 @@ function fxCheckIpAddressChanged()
   if [ "$FX_CURRENT_IP_ADDRESS" = "$FX_LAST_KNOWN_IP_ADDRESS" ]; then
 
     fxOK "The IP address is still the same"
+    FX_NEW_IP_ADDRESS=""
     return 0
   fi
 
+  echo ""
   fxMessage "💱 The IP address HAS CHANGED!"
   return 1
 }
