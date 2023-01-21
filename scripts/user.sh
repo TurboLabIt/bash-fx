@@ -21,12 +21,12 @@ function fxGetFileOwner()
   if [ -z "$1" ]; then
     fxCatastrophicError "fxGetFileOwner: you must provide the file/directory to check"
   fi
-  
+
   if [ ! -e "$1" ]; then
     echo ''
     return 0
   fi
-  
+
   stat -c '%U' "$1"
 }
 
@@ -40,8 +40,9 @@ function fxPasswordGenerator()
 function fxPasswordHide()
 {
   local PASSWORD=$1
-  
-  if [ -z "${PASSWORD}" ]; then
+
+  if [ ! -z "${PASSWORD}" ]; then
     echo "${PASSWORD:0:2}**...**${PASSWORD: -2}"
   fi
 }
+
