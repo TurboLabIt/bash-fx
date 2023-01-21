@@ -24,7 +24,7 @@ function fxDate()
 function fxHeader()
 {
   local CHAR_NUM=${#1}
-  
+
   echo -e "\e[1;46m"
   printf '%0.s=' $(seq 0 $CHAR_NUM)
   echo ""
@@ -43,7 +43,7 @@ function fxTitle()
 {
   local CHAR_NUM=${#1}
   local UNDERLINE=$(printf '%0.s-' $(seq 0 $CHAR_NUM))
-  
+
   echo ""
   echo -e "\e[1;44m${1}\e[0m"
   echo -e "\e[1;44m${UNDERLINE}\e[0m"
@@ -69,7 +69,7 @@ function fxOK()
   if [ -z "$MESSAGE" ]; then
     MESSSAGE=OK
   fi
-  
+
   echo -e "\e[1;32m✔ ${MESSAGE}\e[0m"
 }
 
@@ -93,7 +93,7 @@ function fxCatastrophicError()
   echo -e "\e[1;41m🛑 Catastrophic error 🛑\e[0m"
   echo -e "\e[1;41m^^^^^^^^^^^^^^^^^^^^^^^^\e[0m"
   echo -e "\e[1;41m${1}\e[0m"
-  
+
   if [ -z "$2" ]; then
     fxEndFooter failure
     exit
@@ -118,19 +118,19 @@ function fxEndFooter()
   fi
 
   local CHAR_NUM=20
-  
+
   if [ "$1" = "failure" ]; then
     echo -e "\e[1;41m"
   else
     echo -e "\e[1;42m"
   fi
-  
+
   printf '%0.s=' $(seq 0 $CHAR_NUM)
   echo ""
   echo "🏁 The End 🏁"
   printf '%0.s=' $(seq 0 $CHAR_NUM)
   echo ""
-  
+
   fxDate
   echo "Total time: $((($(date +%s)-$TIME_START)/60)) min."
   echo -e "\e[0m"
@@ -141,7 +141,7 @@ function fxEndFooter()
 function fxSourceLocalOrRemote()
 {
   local LOCAL_FILE=/usr/local/turbolab.it/bash-fx/${1}
-  
+
   if [ -f "$LOCAL_FILE" ]; then
     source "$LOCAL_FILE"
   else
@@ -163,3 +163,4 @@ fxSourceLocalOrRemote "scripts/ask.sh"
 fxSourceLocalOrRemote "scripts/lock.sh"
 fxSourceLocalOrRemote "scripts/replace.sh"
 fxSourceLocalOrRemote "scripts/ssh.sh"
+
