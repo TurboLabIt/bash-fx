@@ -64,7 +64,12 @@ source /usr/local/turbolab.it/bash-fx/bash-fx.sh
 ## bash-fx is ready
 
 sudo bash /usr/local/turbolab.it/bash-fx/setup/start.sh ${SCRIPT_NAME}
+
 fxLinkBin ${INSTALL_DIR}${SCRIPT_NAME}.sh
+
+if [ ! -f "/etc/cron.d/${SCRIPT_NAME}" ]; then
+  sudo cp "${INSTALL_DIR}cron" "/etc/cron.d/${SCRIPT_NAME}"
+fi
 
 ## ... other stuff ...
 
