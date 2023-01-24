@@ -78,3 +78,11 @@ function fxCtrlConce()
   ## kill the whole script on Ctrl+C
   trap "exit" INT
 }
+
+
+function fxVersionMinCheck()
+{
+  local MIN_VERSION=$1
+  local VERSION=$@
+  test "$(printf '%s\n' "$MIN_VERSION" | sort -V | head -n 1)" != "$VERSION";
+}
