@@ -80,6 +80,7 @@ function fxCtrlConce()
 }
 
 
+## if fxVersionMinCheck ${MIN_VERSION} ${CURRENT_VERSION}; then
 function fxVersionMinCheck()
 {
   test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1";
