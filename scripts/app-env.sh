@@ -82,7 +82,5 @@ function fxCtrlConce()
 
 function fxVersionMinCheck()
 {
-  local MIN_VERSION=$1
-  local VERSION=$@
-  test "$(printf '%s\n' "$MIN_VERSION" | sort -V | head -n 1)" != "$VERSION";
+  test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1";
 }
