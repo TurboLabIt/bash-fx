@@ -8,7 +8,7 @@ fi
 if [ ! -z "${PROJECT_DIR}" ] && [ -f "${PROJECT_DIR}env" ]; then
 
   APP_ENV=$(cat "${PROJECT_DIR}env")
-  APP_ENV=$(echo "${APP_ENV}" | grep -v '^#')
+  APP_ENV=$(echo "${APP_ENV}" | grep -v '^#' | grep .)
 
 elif [ ! -z "${PROJECT_DIR}" ] && [ -d "${PROJECT_DIR}.git" ] && [ "$(whoami)" = "$PROJECT_DIR_OWNER" ]; then
 
