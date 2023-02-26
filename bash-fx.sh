@@ -45,7 +45,7 @@ function fxTitle()
   local UNDERLINE=$(printf '%0.s-' $(seq 0 $CHAR_NUM))
 
   echo ""
-  echo -e "\e[1;44m${1}\e[0m"
+  echo -e "\e[1;44m$@\e[0m"
   echo -e "\e[1;44m${UNDERLINE}\e[0m"
   echo ""
 }
