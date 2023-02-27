@@ -62,7 +62,7 @@ function fxSetWebPermissions()
     fxCatastrophicError "fxSetWebPermissions: the path ##$PROJECT_DIR## is not an existing directory"
   fi
   
-  local ${PROJECT_DIR}=${PROJECT_DIR%*/}/
+  local PROJECT_DIR=${PROJECT_DIR%*/}/
   
   sudo chmod ugo= "${PROJECT_DIR}" -R
   sudo chmod u=rwx,g=rX "${PROJECT_DIR}" -R
