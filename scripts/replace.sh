@@ -12,3 +12,9 @@ function fxReplaceContentInDirectory()
 
   find "$1" \( -type d -name .git -prune \) -o -type f -print0 | xargs -0 sed -i "s|$2|$3|g"
 }
+
+
+function fxAlphanumOnly()
+{
+  echo "${1}" | tr -cd '[:alnum:]'
+}
