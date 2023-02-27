@@ -33,7 +33,13 @@ function fxGetFileOwner()
 
 function fxPasswordGenerator()
 {
-  echo "$(head /dev/urandom | tr -dc 'A-Za-z0-9' | head -c 19)"
+  while true; do
+    local PASSWORD=$(head /dev/urandom | tr -dc 'A-Za-z0-9' | head -c 19)
+    if [[ "$PASSWORD" =~ [0-9] ]] && [[ "$PASSWORD" =~ [a-z] ]] && [[ "$PASSWORD" =~ [A-Z] ]]; then
+      echo "$PASSWORD"
+      return 0
+     fi
+  done
 }
 
 
