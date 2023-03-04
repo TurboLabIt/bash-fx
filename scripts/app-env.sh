@@ -88,33 +88,44 @@ function fxVersionMinCheck()
 }
 
 
-function fxRequireCompatbileUbuntuVersion()
+function fxGetUbuntuVersion()
 {
-  local COMPATIBLE_OS_VERSIONS="$1"
-  if [ -z "${COMPATIBLE_OS_VERSIONS}" ]; then
-    fxCatastrophicError "fxRequireCompatbileUbuntuVersion error: provide COMPATIBLE_OS_VERSIONS as the first param"
-  fi
-  
-  if [ ! -f /etc/os-release ]; then
-    fxCatastrophicError "fxRequireCompatbileUbuntuVersion Cannot check current OS version (/etc/os-release doesn't exist)"
+    if [ ! -f /etc/os-release ]; then
+    fxCatastrophicError "fxGetUbuntuVersion Cannot check current OS version (/etc/os-release doesn't exist)"
   fi
   
   source /etc/os-release
   ## VERSION_ID="22.04"
   
+  echo "VERSION_ID"
+}
+
+
+function fxRequireCompatbileUbuntuVersion()
+{
+  fxTitle "Checking OS compatibility..."
+  
+  local COMPATIBLE_OS_VERSIONS="$1"
+  if [ -z "${COMPATIBLE_OS_VERSIONS}" ]; then
+    fxCatastrophicError "fxRequireCompatbileUbuntuVersion error: provide COMPATIBLE_OS_VERSIONS as the first param"
+  fi
+  
+  local VERSION_ID=$(fxGetUbuntuVersion)
+  
   ## explode string to array 
   readarray -d ' ' -t  ARR_COMPATIBLE_OS_VERSIONS <<< "$COMPATIBLE_OS_VERSIONS"
     
-    for COMPATIBLE_OS_VERSION in "${ARR_COMPATIBLE_OS_VERSIONS[@]}"; do
-    
-      ## trim the last element (?!?)
-      COMPATIBLE_OS_VERSION=$(echo "${COMPATIBLE_OS_VERSION}")
-      
-      if [ "${VERSION_ID}" == "${COMPATIBLE_OS_VERSION}" ]; then
-        return 0
-      fi
-      
-    done
-    
-    fxCatastrophicError "The current operating system version ##${VERSION_ID}## is incompatbile with ##${COMPATIBLE_OS_VERSION}##" 
+  for COMPATIBLE_OS_VERSION in "${ARR_COMPATIBLE_OS_VERSIONS[@]}"; do
+
+    ## trim the last element (?!?)
+    COMPATIBLE_OS_VERSION=$(echo "${COMPATIBLE_OS_VERSION}")
+
+    if [ "${VERSION_ID}" == "${COMPATIBLE_OS_VERSION}" ]; then
+      fxOK "OK, your OS ##${VERSION_ID}## is compatible"
+      return 0
+    fi
+
+  done
+  
+  fxCatastrophicError "The current operating system version ##${VERSION_ID}## is incompatbile with the expected ##${COMPATIBLE_OS_VERSIONS}##" 
 }
