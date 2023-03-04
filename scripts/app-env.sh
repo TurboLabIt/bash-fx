@@ -90,4 +90,31 @@ function fxVersionMinCheck()
 
 function fxRequireCompatbileUbuntuVersion()
 {
+  local COMPATIBLE_OS_VERSIONS="$1"
+  if [ -z "${COMPATIBLE_OS_VERSIONS}" ]; then
+    fxCatastrophicError "fxRequireCompatbileUbuntuVersion error: provide COMPATIBLE_OS_VERSIONS as the first param"
+  fi
+  
+  if [ ! -f /etc/os-release ]; then
+    fxCatastrophicError "fxRequireCompatbileUbuntuVersion Cannot check current OS version (/etc/os-release doesn't exist)"
+  fi
+  
+  source /etc/os-release
+  ## VERSION_ID="22.04"
+  
+  ## explode string to array 
+  readarray -d ' ' -t  ARR_COMPATIBLE_OS_VERSIONS <<< "$COMPATIBLE_OS_VERSIONS"
+    
+    for COMPATIBLE_OS_VERSION in "${ARR_COMPATIBLE_OS_VERSIONS[@]}"; do
+    
+      ## trim the last element (?!?)
+      COMPATIBLE_OS_VERSION=$(echo "${COMPATIBLE_OS_VERSION}")
+      
+      if [ "${VERSION_ID}" == "${COMPATIBLE_OS_VERSION}" ]; then
+        return 0
+      fi
+      
+    done
+    
+    fxCatastrophicError "The current operating system version ##${VERSION_ID}## is incompatbile with ##${COMPATIBLE_OS_VERSION}##" 
 }
