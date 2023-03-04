@@ -97,7 +97,7 @@ function fxGetUbuntuVersion()
   source /etc/os-release
   ## VERSION_ID="22.04"
   
-  echo "VERSION_ID"
+  echo "${VERSION_ID}"
 }
 
 
