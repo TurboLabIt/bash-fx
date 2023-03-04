@@ -86,3 +86,8 @@ function fxVersionMinCheck()
 {
   test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1";
 }
+
+
+function fxRequireCompatbileUbuntuVersion()
+{
+}
