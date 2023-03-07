@@ -59,6 +59,7 @@ function fxSetWebPermissions()
   
   local OWN_USER=$1
   local PROJECT_DIR=$2
+  local BACKGROUND=$3
   
   if [ -z "$OWN_USER" ] || [ -z "$PROJECT_DIR" ]; then
     fxCatastrophicError "fxSetWebPermissions: you must provide the user to be set as owner and the directory path"
@@ -70,22 +71,28 @@ function fxSetWebPermissions()
   
   local PROJECT_DIR=${PROJECT_DIR%*/}/
   
-  sudo chmod ugo= "${PROJECT_DIR}" -R
-  sudo chmod u=rwx,g=rX "${PROJECT_DIR}" -R
+  if [ ! -z "${BACKGROUND}" ] && [ "${BACKGROUND}" != 0 ]; then
+    local SUDOBACKGROUD="sudo -b"
+  else
+    local SUDOBACKGROUD="sudo" 
+  fi
+  
+   ${SUDOBACKGROUD} chmod ugo= "${PROJECT_DIR}" -R
+   ${SUDOBACKGROUD} chmod u=rwx,g=rX "${PROJECT_DIR}" -R
   
   if [ -d "${PROJECT_DIR}scripts" ]; then
-    sudo chmod u=rwx,g=rx "${PROJECT_DIR}scripts/"*.sh -R
+    ${SUDOBACKGROUD} chmod u=rwx,g=rx "${PROJECT_DIR}scripts/"*.sh -R
   else
     fxWarning "${PROJECT_DIR}scripts/ not found"
   fi
   
   if [ -d "${PROJECT_DIR}var" ]; then
-    sudo chmod u=rwx,g=rwX "${PROJECT_DIR}var" -R
+    ${SUDOBACKGROUD} chmod u=rwx,g=rwX "${PROJECT_DIR}var" -R
   else
     fxWarning "${PROJECT_DIR}var/ not found"
   fi
 
-  sudo chown ${OWN_USER}:www-data "${PROJECT_DIR}" -R
+  ${SUDOBACKGROUD} chown ${OWN_USER}:www-data "${PROJECT_DIR}" -R
   
   fxTitle "📂 Listing ##${PROJECT_DIR}#"
   ls -la --color=always "${PROJECT_DIR}"
