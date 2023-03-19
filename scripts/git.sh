@@ -16,7 +16,7 @@ function fxGitCheckForUpdate()
   local LOCAL_REV=$(git -C "${PROJECT_DIR}" rev-parse @)
   
   if [ -z "$SILENT_MODE" ]; then
-   fxInfo "Local rev.: ##${LOCAL_REV}##"
+   fxInfo "Local rev. : ##${LOCAL_REV}##"
   fi
   
   local REMOTE_REV=$(git -C "${PROJECT_DIR}" rev-parse "$UPSTREAM")
