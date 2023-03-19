@@ -13,11 +13,21 @@ function fxGitCheckForUpdate()
   fi
 
   local UPSTREAM=${1:-'@{u}'}
-  local LOCAL=$(git -C "${PROJECT_DIR}" rev-parse @)
-  local REMOTE=$(git -C "${PROJECT_DIR}" rev-parse "$UPSTREAM")
+  local LOCAL_REV=$(git -C "${PROJECT_DIR}" rev-parse @)
+  
+  if [ -z "$SILENT_MODE" ]; then
+   fxInfo "Local rev.: ##${LOCAL_REV}##"
+  fi
+  
+  local REMOTE_REV=$(git -C "${PROJECT_DIR}" rev-parse "$UPSTREAM")
+  
+  if [ -z "$SILENT_MODE" ]; then
+   fxInfo "Remote rev.: ##${REMOTE_REV}##"
+  fi
+  
   local BASE=$(git -C "${PROJECT_DIR}" merge-base @ "$UPSTREAM")
 
-  if [ $LOCAL = $REMOTE ]; then
+  if [ "$LOCAL_REV" = "$REMOTE_REV" ]; then
 
     if [ -z "$SILENT_MODE" ]; then
       fxOK "Up-to-date"
