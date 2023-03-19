@@ -23,7 +23,7 @@ function fxGitCheckForUpdate()
       fxOK "Up-to-date"
     fi
 
-    return ""
+    return 0
 
   fi
 
