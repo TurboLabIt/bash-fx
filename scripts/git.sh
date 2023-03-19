@@ -1,3 +1,21 @@
+function fxGitAsOwner()
+{
+  if [ -z "$1" ]; then
+    local PROJECT_DIR=$(pwd)
+  else
+    local PROJECT_DIR=$1
+  fi
+  
+  local PROJECT_DIR_OWNER=$(fxGetFileOwner ${PROJECT_DIR})
+  
+  if [ "$(whoami)" = "$PROJECT_DIR_OWNER" ]; then
+    git -C "${PROJECT_DIR}" "${@:2}"
+  else
+    sudo -u $PROJECT_DIR_OWNER -H  git -C "${PROJECT_DIR}" "${@:2}"
+  fi
+}
+
+
 function fxGitCheckForUpdate()
 {
   if [ -z "$1" ]; then
@@ -12,20 +30,22 @@ function fxGitCheckForUpdate()
    fxTitle "🔎 Checking if a new git revision is available..."
   fi
 
+  fxGitAsOwner fetch
+
   local UPSTREAM=${1:-'@{u}'}
-  local LOCAL_REV=$(git -C "${PROJECT_DIR}" rev-parse @)
+  local LOCAL_REV=$(fxGitAsOwner "${PROJECT_DIR}" rev-parse @)
   
   if [ -z "$SILENT_MODE" ]; then
    fxInfo "Local rev. : ##${LOCAL_REV}##"
   fi
   
-  local REMOTE_REV=$(git -C "${PROJECT_DIR}" rev-parse "$UPSTREAM")
+  local REMOTE_REV=$(fxGitAsOwner "${PROJECT_DIR}" rev-parse "$UPSTREAM")
   
   if [ -z "$SILENT_MODE" ]; then
    fxInfo "Remote rev.: ##${REMOTE_REV}##"
   fi
   
-  local BASE=$(git -C "${PROJECT_DIR}" merge-base @ "$UPSTREAM")
+  local BASE=$(fxGitAsOwner "${PROJECT_DIR}" merge-base @ "$UPSTREAM")
 
   if [ "$LOCAL_REV" = "$REMOTE_REV" ]; then
 
@@ -34,7 +54,6 @@ function fxGitCheckForUpdate()
     fi
 
     return 0
-
   fi
 
 
@@ -45,7 +64,6 @@ function fxGitCheckForUpdate()
     fi
 
     return 1
-
   fi
 
 
@@ -56,7 +74,6 @@ function fxGitCheckForUpdate()
     fi
 
     return 2
-
   fi
 
 
