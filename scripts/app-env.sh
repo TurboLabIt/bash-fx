@@ -45,7 +45,15 @@ function devOnlyCheck()
 function fxEnvNotProd()
 {
   if [ -z "$APP_ENV" ] || [ "$APP_ENV" = "prod" ]; then
-    fxCatastrophicError "🧑‍💻 This script cannot run if APP_ENV is not set or in PRODUCTION! Current env: ##$APP_ENV##"
+    fxCatastrophicError "🧑‍💻 This script cannot run if APP_ENV is not set or is PRODUCTION! Current env: ##$APP_ENV##"
+  fi
+}
+
+
+function fxEnvProdOnly()
+{
+  if [ -z "$APP_ENV" ] || [ "$APP_ENV" != "prod" ]; then
+    fxCatastrophicError "🧑‍💻 This script cannot run if APP_ENV is not PRODUCTION! Current env: ##$APP_ENV##"
   fi
 }
 
