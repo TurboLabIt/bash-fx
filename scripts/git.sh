@@ -92,7 +92,7 @@ function fxGitSetKnownHosts()
 
     fxTitle  "⛲ Setting KnownHosts for ##${INPUT_USERNAME}##"
     local SUDO_USER="sudo -u ${INPUT_USERNAME} -H"
-    local SUDO_USER_HOME=~$INPUT_USERNAME
+    local SUDO_USER_HOME=$(eval echo ~$INPUT_USERNAME)
 
   else
   
