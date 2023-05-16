@@ -98,18 +98,18 @@ function fxGitSetKnownHosts()
     fxTitle "⛲ Setting KnownHosts..."
   fi
   
-  local SUDO_USER_KNOWN_HOSTS=$($SUDO_USER echo $HOME)/.ssh/known_hosts
-  fxInfo "${SUDO_USER_KNOWN_HOSTS}"
+  local KNOWN_FILE=~$SUDO_USER/.ssh/known_hosts
+  fxInfo "${KNOWN_FILE}"
   
   fxTitle "🧹 Removing Bitbucket..."
   ${SUDO_USER} ssh-keygen -R bitbucket.org
   
   fxTitle "🍋 Adding Bitbucket..."
-  ${SUDO_USER} curl https://bitbucket.org/site/ssh >> ${SUDO_USER_KNOWN_HOSTS}
+  ${SUDO_USER} curl https://bitbucket.org/site/ssh >> ${KNOWN_FILE}
   
   fxTitle "🧹 Removing GitHub..."
   ${SUDO_USER} ssh-keygen -R github.com
   
   fxTitle "🍋 Adding GitHub..."
-  ${SUDO_USER} curl https://raw.githubusercontent.com/TurboLabIt/webstackup/master/config/ssh/github-fingerprint >> ${SUDO_USER_KNOWN_HOSTS}.ssh/known_hosts
+  ${SUDO_USER} curl https://raw.githubusercontent.com/TurboLabIt/webstackup/master/config/ssh/github-fingerprint >> ${KNOWN_FILE}
 }
