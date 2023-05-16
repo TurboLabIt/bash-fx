@@ -82,3 +82,33 @@ function fxGitCheckForUpdate()
 
   return 3
 }
+
+
+function fxGitSetKnownHosts()
+{
+  local USERNAME=$1
+  
+  if [ -z "${USERNAME}" ]; then
+
+    local  "⛲ Setting KnownHosts for ##${USERNAME}##"
+    local SUDO_USER="sudo -u ${USERNAME} -H"
+
+  else
+  
+    fxTitle "⛲ Setting KnownHosts..."
+  fi
+  
+  local SUDO_USER_HOME=$($SUDO_USER echo $HOME)/
+  
+  fxTitle "🧹 Removing Bitbucket..."
+  ${SUDO_USER} ssh-keygen -R bitbucket.org
+  
+  fxTitle "🍋 Adding Bitbucket..."
+  ${SUDO_USER} curl https://bitbucket.org/site/ssh >> ${SUDO_USER_HOME}.ssh/known_hosts
+  
+  fxTitle "🧹 Removing GitHub..."
+  ${SUDO_USER} ssh-keygen -R github.com
+  
+  fxTitle "🍋 Adding GitHub..."
+  ${SUDO_USER} curl -L https://api.github.com/meta | jq -r '.ssh_keys | .[]' | sed -e 's/^/github.com /' >> ${SUDO_USER_HOME}.ssh/known_hosts
+}
