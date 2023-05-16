@@ -86,12 +86,12 @@ function fxGitCheckForUpdate()
 
 function fxGitSetKnownHosts()
 {
-  local USERNAME=$1
+  local INPUT_USERNAME=$1
   
-  if [ -z "${USERNAME}" ]; then
+  if [ -z "${INPUT_USERNAME}" ]; then
 
-    local  "⛲ Setting KnownHosts for ##${USERNAME}##"
-    local SUDO_USER="sudo -u ${USERNAME} -H"
+    local  "⛲ Setting KnownHosts for ##${INPUT_USERNAME}##"
+    local SUDO_USER="sudo -u ${INPUT_USERNAME} -H"
 
   else
   
