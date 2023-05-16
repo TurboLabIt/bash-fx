@@ -110,5 +110,5 @@ function fxGitSetKnownHosts()
   ${SUDO_USER} ssh-keygen -R github.com
   
   fxTitle "🍋 Adding GitHub..."
-  ${SUDO_USER} curl -L https://api.github.com/meta | jq -r '.ssh_keys | .[]' | sed -e 's/^/github.com /' >> ${SUDO_USER_HOME}.ssh/known_hosts
+  ${SUDO_USER} curl https://raw.githubusercontent.com/TurboLabIt/webstackup/master/config/ssh/github-fingerprint >> ${SUDO_USER_HOME}.ssh/known_hosts
 }
