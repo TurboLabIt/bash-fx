@@ -88,7 +88,7 @@ function fxGitSetKnownHosts()
 {
   local INPUT_USERNAME=$1
   
-  if [ -z "${INPUT_USERNAME}" ]; then
+  if [ ! -z "${INPUT_USERNAME}" ]; then
 
     local  "⛲ Setting KnownHosts for ##${INPUT_USERNAME}##"
     local SUDO_USER="sudo -u ${INPUT_USERNAME} -H"
