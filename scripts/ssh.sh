@@ -90,12 +90,20 @@ function fxSshSetKnownHosts()
   echo "${KNOWN_FILE_CONTENT}" > ${KNOWN_FILE}
   
   fxTitle "🍋 Adding Bitbucket..."
-  ${SUDO_USER} echo "" >> ${KNOWN_FILE}
+  ${SUDO_USER} echo -e '\n' >> ${KNOWN_FILE}
+  ${SUDO_USER} echo -e '\n' >> ${KNOWN_FILE}
   ${SUDO_USER} curl https://bitbucket.org/site/ssh >> ${KNOWN_FILE}
   
   fxTitle "🍋 Adding GitHub..."
-  ${SUDO_USER} echo "" >> ${KNOWN_FILE}
+  ${SUDO_USER} echo -e '\n' >> ${KNOWN_FILE}
+  ${SUDO_USER} echo -e '\n' >> ${KNOWN_FILE}
   ${SUDO_USER} curl https://raw.githubusercontent.com/TurboLabIt/webstackup/master/config/ssh/github-fingerprint >> ${KNOWN_FILE}
+  
+  fxTitle "✂ Trimming..."
+  local KNOWN_FILE_CONTENT=$(cat "${KNOWN_FILE}")
+  local KNOWN_FILE_CONTENT=$(fxTrim "${KNOWN_FILE_CONTENT}")
+  echo "${KNOWN_FILE_CONTENT}" > ${KNOWN_FILE}
+  ${SUDO_USER} echo -e '\n' >> ${KNOWN_FILE}
   
   fxTitle "Current known_hosts"
   cat "${KNOWN_FILE}"
