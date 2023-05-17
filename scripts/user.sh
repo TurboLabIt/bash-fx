@@ -72,28 +72,65 @@ function fxSetWebPermissions()
   local PROJECT_DIR=${PROJECT_DIR%*/}/
   
   if [ ! -z "${BACKGROUND}" ] && [ "${BACKGROUND}" != 0 ]; then
-    local SUDOBACKGROUD="sudo -b"
+    local SUDOBACKGROUND="sudo -b"
   else
-    local SUDOBACKGROUD="sudo" 
+    local SUDOBACKGROUND="sudo" 
   fi
   
-   ${SUDOBACKGROUD} chmod ugo= "${PROJECT_DIR}" -R
-   ${SUDOBACKGROUD} chmod u=rwx,g=rX "${PROJECT_DIR}" -R
+   ${SUDOBACKGROUND} chmod ugo= "${PROJECT_DIR}" -R
+   ${SUDOBACKGROUND} chmod u=rwx,g=rX "${PROJECT_DIR}" -R
   
   if [ -d "${PROJECT_DIR}scripts" ]; then
-    ${SUDOBACKGROUD} chmod u=rwx,g=rx "${PROJECT_DIR}scripts/"*.sh -R
+    ${SUDOBACKGROUND} chmod u=rwx,g=rx "${PROJECT_DIR}scripts/"*.sh -R
   else
     fxWarning "${PROJECT_DIR}scripts/ not found"
   fi
   
   if [ -d "${PROJECT_DIR}var" ]; then
-    ${SUDOBACKGROUD} chmod u=rwx,g=rwX "${PROJECT_DIR}var" -R
+    ${SUDOBACKGROUND} chmod u=rwx,g=rwX "${PROJECT_DIR}var" -R
   else
     fxWarning "${PROJECT_DIR}var/ not found"
   fi
 
-  ${SUDOBACKGROUD} chown ${OWN_USER}:www-data "${PROJECT_DIR}" -R
+  ${SUDOBACKGROUND} chown ${OWN_USER}:www-data "${PROJECT_DIR}" -R
   
   fxTitle "📂 Listing ##${PROJECT_DIR}#"
   ls -la --color=always "${PROJECT_DIR}"
 }
+
+
+function fxUserExists()
+{
+  local INPUT_USERNAME=$1
+  
+  if [ -z "${INPUT_USERNAME}" ]; then
+    fxCatastrophicError "fxUserExists(): please provide the username to check"
+  fi
+  
+  if id "${INPUT_USERNAME}" &>/dev/null; then
+    echo "0"
+  else
+    echo ""
+  fi
+}
+
+
+function fxGetUserHomePath()
+{
+  local INPUT_USERNAME=$1
+  local USER_EXISTS=$(fxUserExists "${INPUT_USERNAME}")
+
+  if [ ! "$USER_EXISTS" ]; then
+    echo ""
+    return 255
+  fi
+  
+  local USER_HOME_PATH=$(eval echo ~$INPUT_USERNAME)
+  
+  if [ -d "${USER_HOME_PATH}" ]; then
+    echo "${USER_HOME_PATH}/"
+  else
+    echo ""
+  fi
+}
+

@@ -18,3 +18,14 @@ function fxAlphanumOnly()
 {
   echo "${1}" | tr -cd '[:alnum:]'
 }
+
+
+function fxTrim()
+{
+  local INPUT_STRING=$1
+
+  local TRIMMED_STRING="${INPUT_STRING#"${INPUT_STRING%%[![:space:]]*}"}"
+  local TRIMMED_STRING="${TRIMMED_STRING%"${TRIMMED_STRING##*[![:space:]]}"}"
+  
+  echo "${TRIMMED_STRING}"
+}
