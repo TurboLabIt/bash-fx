@@ -95,6 +95,7 @@ function fxSshSetKnownHosts()
   
   fxTitle "🍋 Adding GitHub..."
   ${SUDO_USER} echo -en '\n' >> ${KNOWN_FILE}
+  ${SUDO_USER} echo -en '\n' >> ${KNOWN_FILE}
   ${SUDO_USER} curl https://raw.githubusercontent.com/TurboLabIt/webstackup/master/config/ssh/github-fingerprint >> ${KNOWN_FILE}
   
   fxTitle "✂ Trimming..."
@@ -103,6 +104,6 @@ function fxSshSetKnownHosts()
   echo "${KNOWN_FILE_CONTENT}" > ${KNOWN_FILE}
   ${SUDO_USER} echo -en '\n' >> ${KNOWN_FILE}
   
-  fxTitle "Current known_hosts"
+  fxTitle "Final ${KNOWN_FILE}"
   cat "${KNOWN_FILE}"
 }
