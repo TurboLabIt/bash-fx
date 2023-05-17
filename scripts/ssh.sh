@@ -37,3 +37,36 @@ fxSshCheckRemoteDirectory()
   fxTitle "📂 Remote listing..."
   ssh -t $1 "ls -lah --color $2"
 }
+
+
+function fxSshSetKnownHosts()
+{
+  local INPUT_USERNAME=$1
+  
+  if [ ! -z "${INPUT_USERNAME}" ]; then
+
+    fxTitle  "⛲ Setting KnownHosts for ##${INPUT_USERNAME}##"
+    local SUDO_USER="sudo -u ${INPUT_USERNAME} -H"
+    local SUDO_USER_HOME=$(eval echo ~$INPUT_USERNAME)
+
+  else
+  
+    fxTitle "⛲ Setting KnownHosts..."
+    local SUDO_USER_HOME=$HOME
+  fi
+
+  local KNOWN_FILE=${SUDO_USER_HOME}/.ssh/known_hosts
+  fxInfo "${KNOWN_FILE}"
+  
+  fxTitle "🧹 Removing Bitbucket..."
+  ${SUDO_USER} ssh-keygen -R bitbucket.org
+  
+  fxTitle "🍋 Adding Bitbucket..."
+  ${SUDO_USER} curl https://bitbucket.org/site/ssh >> ${KNOWN_FILE}
+  
+  fxTitle "🧹 Removing GitHub..."
+  ${SUDO_USER} ssh-keygen -R github.com
+  
+  fxTitle "🍋 Adding GitHub..."
+  ${SUDO_USER} curl https://raw.githubusercontent.com/TurboLabIt/webstackup/master/config/ssh/github-fingerprint >> ${KNOWN_FILE}
+}
