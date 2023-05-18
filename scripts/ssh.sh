@@ -78,20 +78,20 @@ function fxSshSetKnownHosts()
   local KNOWN_FILE=${SUDO_USER_HOME}/.ssh/known_hosts
   fxInfo "${KNOWN_FILE}"
   
-  fxTitle "🧹 Removing Bitbucket..."
-  ${SUDO_USER} ssh-keygen -R bitbucket.org
+  #fxTitle "🧹 Removing Bitbucket..."
+  #${SUDO_USER} ssh-keygen -R bitbucket.org
   
-  fxTitle "🧹 Removing GitHub..."
-  ${SUDO_USER} ssh-keygen -R github.com
+  #fxTitle "🧹 Removing GitHub..."
+  #${SUDO_USER} ssh-keygen -R github.com
   
-  fxTitle "✂ Trimming..."
-  local KNOWN_FILE_CONTENT=$(cat "${KNOWN_FILE}")
-  local KNOWN_FILE_CONTENT=$(fxTrim "${KNOWN_FILE_CONTENT}")
-  echo "${KNOWN_FILE_CONTENT}" > ${KNOWN_FILE}
+  #fxTitle "✂ Trimming..."
+  #local KNOWN_FILE_CONTENT=$(cat "${KNOWN_FILE}")
+  #local KNOWN_FILE_CONTENT=$(fxTrim "${KNOWN_FILE_CONTENT}")
+  #echo "${KNOWN_FILE_CONTENT}" > ${KNOWN_FILE}
   
   fxTitle "🍋 Adding Bitbucket..."
-  ${SUDO_USER} echo -en '\n' >> ${KNOWN_FILE}
-  ${SUDO_USER} curl https://bitbucket.org/site/ssh >> ${KNOWN_FILE}
+  #${SUDO_USER} echo -en '\n' >> ${KNOWN_FILE}
+  ${SUDO_USER} curl https://bitbucket.org/site/ssh > ${KNOWN_FILE}
   
   fxTitle "🍋 Adding GitHub..."
   ${SUDO_USER} echo -en '\n' >> ${KNOWN_FILE}
