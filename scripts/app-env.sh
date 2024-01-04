@@ -20,7 +20,7 @@ elif [ ! -z "${PROJECT_DIR}" ] && [ -d "${PROJECT_DIR}.git" ] && [ "$(whoami)" !
 fi
 
 
-if [ "$GIT_BRANCH" = "master" ]; then
+if [ "$GIT_BRANCH" = "master" ] || [ "$GIT_BRANCH" = "main" ]; then
 
   APP_ENV=prod
   
