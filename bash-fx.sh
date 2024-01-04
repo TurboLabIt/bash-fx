@@ -111,7 +111,7 @@ function fxExitOnNonZero()
 
 function fxEndFooter()
 {
-  if [ ! -z "$INITIAL_DIR" ]; then
+  if [ ! -z "$INITIAL_DIR" ] && [ "$(pwd)" != "$INITIAL_DIR" ]; then
     fxTitle "Switching back to $INITIAL_DIR"
     cd "$INITIAL_DIR"
     pwd
