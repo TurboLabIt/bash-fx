@@ -10,7 +10,7 @@ A collection of common Bash functions and variables
 echo ""
 SCRIPT_NAME=sample-script-name
 
-## bash-fx
+## https://github.com/TurboLabIt/bash-fx
 if [ -z $(command -v curl) ]; then sudo apt update && sudo apt install curl -y; fi
 
 if [ -f "/usr/local/turbolab.it/bash-fx/bash-fx.sh" ]; then
