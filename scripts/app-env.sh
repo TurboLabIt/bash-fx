@@ -58,6 +58,13 @@ function fxEnvProdOnly()
 }
 
 
+function fxEnvNotDev()
+{
+  if [ -z "$APP_ENV" ] || [ "$APP_ENV" == "dev" ]; then
+    fxCatastrophicError "🧑‍💻 This script cannot run if APP_ENV is DEV! Current env: ##$APP_ENV##"
+  fi
+}
+
 function fxContainerDetection()
 {
   local SILENT_MODE=$1
