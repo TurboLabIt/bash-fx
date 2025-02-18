@@ -164,3 +164,5 @@ fxSourceLocalOrRemote "scripts/ask.sh"
 fxSourceLocalOrRemote "scripts/lock.sh"
 fxSourceLocalOrRemote "scripts/replace.sh"
 fxSourceLocalOrRemote "scripts/ssh.sh"
+fxSourceLocalOrRemote "scripts/mail.sh"
+
