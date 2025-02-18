@@ -26,6 +26,8 @@ fi
 
 function fxMailNameWarning()
 {
+  fxTitle "Checking mailname from /etc/mailname..."
+  
   if [ -z "WSU_MAILNAME" ]; then
     fxWarning "Mailname doesn't exist. User discretion is advised"
   else
