@@ -65,6 +65,7 @@ function fxEnvNotDev()
   fi
 }
 
+
 function fxContainerDetection()
 {
   local SILENT_MODE=$1
@@ -73,7 +74,7 @@ function fxContainerDetection()
    fxTitle "🐋 Checking if the app is running in a container..."
   fi
   
-  if [ -f "/.dockerenv" ]; then
+  if grep -qa 'container=lxc' /proc/1/environ || [ -f "/.dockerenv" ]; then
     local IS_CONTAINER=1
   else
     local IS_CONTAINER=0
