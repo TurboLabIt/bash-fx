@@ -6,7 +6,7 @@ fxSshTestAccess()
   
   fxTitle "🔭 Testing SSH access to ##$1##..."
   
-  ssh -t $1 'echo -e "🔭 \e[1;32mAccess to ##$(hostname)## GRANTED\e[0m 🔭"'
+  ssh -o BatchMode=yes -o ConnectTimeout=5 -t $1 'echo -e "🔭 \e[1;32mAccess to ##$(hostname)## GRANTED\e[0m 🔭"'
   
   if [ "$?" != 0 ]; then
     fxCatastrophicError "Access to ##$1## DENIED"
