@@ -25,7 +25,7 @@ fxSshCheckRemoteDirectory()
   echo "📂 Dir:      ##$2##"
   echo ""
   
-  ssh -t $1 "[ -d $2 ]"
+  ssh -o BatchMode=yes $1 "[ -d $2 ]"
   
   if [ "$?" != 0 ]; then
     fxCatastrophicError "Remote directory check FAILED"
@@ -35,7 +35,7 @@ fxSshCheckRemoteDirectory()
   fxOK "Yes, it exists!"
   
   fxTitle "📂 Remote listing..."
-  ssh -t $1 "ls -lah --color $2"
+  ssh -o BatchMode=yes $1 "ls -lah --color $2"
 }
 
 
