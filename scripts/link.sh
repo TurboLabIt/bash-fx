@@ -22,6 +22,12 @@ function fxLink()
   echo "💻 Target: ${TARGET_FULLPATH}"
   echo "🔗 Link:   ${LINK_FULLPATH}"
   sudo ln -s "${TARGET_FULLPATH}" "${LINK_FULLPATH}"
+
+  if [ ! -z "${3}" ]; then
+  
+    fxInfo "Changing owner to ${3}..."
+    sudo chown -h ${3} "${LINK_FULLPATH}"
+  fi
 }
 
 
