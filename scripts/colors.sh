@@ -1,5 +1,25 @@
 #!/usr/bin/env bash
 
+
+function fxSetBackgroundColorByHostAndEnv()
+{
+  if [ "$(hostname -s)" != "$1" ]; then
+    return 255;
+  fi
+
+  case "$2" in
+    prod)
+      # very dark red
+      fxSetBackgroundColor "#F2F2F2" "#240000"
+      ;;
+    next|staging)
+      # very dark orange
+      fxSetBackgroundColor "#F2F2F2" "#241600"
+      ;;
+  esac
+}
+
+
 function fxSetBackgroundColor()
 {
   if [[ $- == *i* && -n "$SSH_CONNECTION" ]]; then
