@@ -3,7 +3,7 @@
 
 function fxSetBackgroundColorByHostAndEnv()
 {
-  if [ "$(hostname -s)" != "$1" ]; then
+  if [ "$(hostname)" != "$1" ]; then
     return 255;
   fi
 
