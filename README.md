@@ -11,7 +11,7 @@ echo ""
 SCRIPT_NAME=sample-script-name
 
 ## https://github.com/TurboLabIt/bash-fx
-if [ -z $(command -v curl) ]; then sudo apt update && sudo apt install curl -y; fi
+if [ -z "$(command -v curl)" ]; then sudo apt update && sudo apt install curl -y; fi
 
 if [ -f "/usr/local/turbolab.it/bash-fx/bash-fx.sh" ]; then
   source "/usr/local/turbolab.it/bash-fx/bash-fx.sh"
