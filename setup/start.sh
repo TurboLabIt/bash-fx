@@ -48,6 +48,6 @@ else
   fxTitle "⏬ Updating..."
   cd "$INSTALL_DIR"
   git fetch --depth 1
-  git reset --hard origin/master
+  git reset --hard @{upstream}
   git gc --prune=all
 fi
