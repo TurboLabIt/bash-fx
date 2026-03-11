@@ -19,7 +19,7 @@ fxTitle "Suppress needrestart..."
 if [ -d "/etc/needrestart/conf.d/" ]; then
 
   sudo curl -Lo /etc/needrestart/conf.d/zzupdate-needrestart-suppress.conf \
-    https://raw.githubusercontent.com/TurboLabIt/zzupdate/master/needrestart-suppress.conf?$(date +%s)
+    https://raw.githubusercontent.com/TurboLabIt/zzupdate/master/needrestart-suppress.conf
 else
 
   fxInfo "Not installed"

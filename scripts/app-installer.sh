@@ -9,7 +9,7 @@ function zzAppInstall()
   fxTitle "💿 Installing $APP_NAME..."
   if [ ! -d "/usr/local/turbolab.it/$APP_NAME" ]; then
 
-    curl -s https://raw.githubusercontent.com/TurboLabIt/$APP_NAME/master/setup.sh?$(date +%s) | sudo bash
+    curl -s https://raw.githubusercontent.com/TurboLabIt/$APP_NAME/master/setup.sh | sudo bash
     ${CMD_TO_EXECUTE_IF_NEW}
   
   else
