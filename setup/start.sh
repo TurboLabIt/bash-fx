@@ -49,5 +49,7 @@ else
   cd "$INSTALL_DIR"
   git fetch --depth 1
   git reset --hard @{upstream}
+
+  fxTitle "🗜️ Pruning..."
   git gc --prune=all
 fi
