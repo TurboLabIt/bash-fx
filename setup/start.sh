@@ -39,13 +39,15 @@ if [ ! -d "$INSTALL_DIR" ]; then
   fxTitle "💽 Installing..."
   mkdir -p "$INSTALL_DIR_PARENT"
   cd "$INSTALL_DIR_PARENT"
-  git clone https://github.com/TurboLabIt/${SCRIPT_NAME}.git
-  
+  git clone --depth 1 https://github.com/TurboLabIt/${SCRIPT_NAME}.git
+
+  cd "$INSTALL_DIR"
+
 else
 
   fxTitle "⏬ Updating..."
+  cd "$INSTALL_DIR"
+  git fetch --depth 1
+  git reset --hard origin/master
+  git gc --prune=all
 fi
-
-cd "$INSTALL_DIR"
-git reset --hard
-git pull --no-rebase
