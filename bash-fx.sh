@@ -138,6 +138,13 @@ function fxEndFooter()
 }
 
 
+function fxList()
+{
+  fxTitle "📂 Listing ##${1}#"
+  ls -l --color=always "${1}"
+}
+
+
 function fxSourceLocalOrRemote()
 {
   local LOCAL_FILE=/usr/local/turbolab.it/bash-fx/${1}
