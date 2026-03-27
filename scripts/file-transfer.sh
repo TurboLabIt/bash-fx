@@ -1,3 +1,7 @@
+## Usage: fxMirrorFromSsh "root" "example.com" "/var/www/source" "/var/www/destination"
+## Result: remote:/var/www/source/file.txt => local:/var/www/destination/file.txt
+##         The CONTENTS of /var/www/source are synced INTO /var/www/destination.
+##         It does NOT create /var/www/destination/source/
 function fxMirrorFromSsh()
 {
   local REMOTE_USER="${1}"
@@ -5,17 +9,23 @@ function fxMirrorFromSsh()
   local REMOTE_PATH="${3}"
   local LOCAL_DESTINATION="${4}"
   local DELAY_OPT="${5}"
+
   wsuMirrorSsh "from" "${REMOTE_USER}" "${REMOTE_HOST}" "${REMOTE_PATH}" "${LOCAL_DESTINATION}" "${DELAY_OPT}"
 }
 
 
+## Usage: fxMirrorToSsh "/var/www/source" "root" "example.com" "/var/www/destination"
+## Result: local:/var/www/source/file.txt => remote:/var/www/destination/file.txt
+##         The CONTENTS of /var/www/source are synced INTO /var/www/destination.
+##         It does NOT create /var/www/destination/source/
 function fxMirrorToSsh()
 {
-  local REMOTE_USER="${1}"
-  local REMOTE_HOST="${2}"
-  local REMOTE_PATH="${3}"
-  local LOCAL_SOURCE="${4}"
+  local LOCAL_SOURCE="${1}"
+  local REMOTE_USER="${2}"
+  local REMOTE_HOST="${3}"
+  local REMOTE_PATH="${4}"
   local DELAY_OPT="${5}"
+
   wsuMirrorSsh "to" "${REMOTE_USER}" "${REMOTE_HOST}" "${REMOTE_PATH}" "${LOCAL_SOURCE}" "${DELAY_OPT}"
 }
 
