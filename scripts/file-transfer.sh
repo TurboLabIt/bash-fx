@@ -10,7 +10,7 @@ function fxMirrorFromSsh()
   local LOCAL_DESTINATION="${4}"
   local DELAY_OPT="${5}"
 
-  wsuMirrorSsh "from" "${REMOTE_USER}" "${REMOTE_HOST}" "${REMOTE_PATH}" "${LOCAL_DESTINATION}" "${DELAY_OPT}"
+  fxMirrorSsh "from" "${REMOTE_USER}" "${REMOTE_HOST}" "${REMOTE_PATH}" "${LOCAL_DESTINATION}" "${DELAY_OPT}"
 }
 
 
@@ -26,7 +26,7 @@ function fxMirrorToSsh()
   local REMOTE_PATH="${4}"
   local DELAY_OPT="${5}"
 
-  wsuMirrorSsh "to" "${REMOTE_USER}" "${REMOTE_HOST}" "${REMOTE_PATH}" "${LOCAL_SOURCE}" "${DELAY_OPT}"
+  fxMirrorSsh "to" "${REMOTE_USER}" "${REMOTE_HOST}" "${REMOTE_PATH}" "${LOCAL_SOURCE}" "${DELAY_OPT}"
 }
 
 
