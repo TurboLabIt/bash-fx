@@ -71,4 +71,41 @@ function fxCheckHttpsCert()
 
     fi
   fi
+
+  ## HTTP status code check
+  local HTTP_RESPONSE HTTP_STATUS HTTP_LOCATION
+  HTTP_RESPONSE=$(curl -sS -k -o /dev/null -w '%{http_code} %{redirect_url}' --max-time 10 "https://$HOST" 2>/dev/null)
+  HTTP_STATUS=${HTTP_RESPONSE%% *}
+  HTTP_LOCATION=${HTTP_RESPONSE#* }
+
+  if [ -n "$HTTP_STATUS" ] && [ "$HTTP_STATUS" != "000" ]; then
+
+    local STATUS_FIRST=${HTTP_STATUS:0:1}
+
+    if [ "$STATUS_FIRST" = "2" ]; then
+      echo "  ✅ HTTP status: $HTTP_STATUS OK"
+    elif [ "$STATUS_FIRST" = "3" ]; then
+      echo "  ↪️  $HTTP_STATUS: redirecting to $HTTP_LOCATION"
+    elif [ "$STATUS_FIRST" = "4" ]; then
+      case "$HTTP_STATUS" in
+        400) fxWarning "$HTTP_STATUS: Bad Request" ;;
+        401) fxWarning "$HTTP_STATUS: Unauthorized" ;;
+        403) fxWarning "$HTTP_STATUS: Forbidden" ;;
+        404) fxWarning "$HTTP_STATUS: Not Found" ;;
+        405) fxWarning "$HTTP_STATUS: Method Not Allowed" ;;
+        408) fxWarning "$HTTP_STATUS: Request Timeout" ;;
+        429) fxWarning "$HTTP_STATUS: Too Many Requests" ;;
+        *)   fxWarning "$HTTP_STATUS: Client Error" ;;
+      esac
+    elif [ "$STATUS_FIRST" = "5" ]; then
+      case "$HTTP_STATUS" in
+        500) fxWarning "$HTTP_STATUS: Internal Server Error" ;;
+        502) fxWarning "$HTTP_STATUS: Bad Gateway" ;;
+        503) fxWarning "$HTTP_STATUS: Service Unavailable" ;;
+        504) fxWarning "$HTTP_STATUS: Gateway Timeout" ;;
+        *)   fxWarning "$HTTP_STATUS: Server Error" ;;
+      esac
+    fi
+
+  fi
 }
