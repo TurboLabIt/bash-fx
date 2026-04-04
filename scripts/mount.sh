@@ -14,7 +14,7 @@ function fxMountBind()
   fi
 
   sudo mkdir -p "$TARGET_DIR"
-  umount "$TARGET_DIR"
+  sudo umount "$TARGET_DIR"
   sudo touch "${TARGET_DIR}This is the mountpoint. The target directory is UNMOUNTED"
 
   local MOUNT_OUTPUT
@@ -46,7 +46,7 @@ function fxMountVmwareShare()
   local MOUNTPOINT_DIR="/mnt/hgfs/${1,,}/"
 
   sudo mkdir -p "$MOUNTPOINT_DIR"
-  umount "$MOUNTPOINT_DIR"
+  sudo umount "$MOUNTPOINT_DIR"
   sudo touch "${MOUNTPOINT_DIR}This is the VM disk. The host dir is UNMOUNTED"
 
   local MOUNT_OUTPUT
