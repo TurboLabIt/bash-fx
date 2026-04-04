@@ -13,9 +13,15 @@ function fxMountBind()
     fxCatastrophicError "No target mountpoint provided"
   fi
 
-  sudo mkdir -p "$TARGET_DIR"
-  sudo umount "$TARGET_DIR"
-  sudo touch "${TARGET_DIR}This is the mountpoint. The target directory is UNMOUNTED"
+  if [ ! -d "$TARGET_DIR" ]; then
+
+    sudo mkdir -p "$TARGET_DIR"
+    sudo touch "${TARGET_DIR}This is the mountpoint. The target directory is UNMOUNTED"
+
+    else
+
+      sudo umount "$TARGET_DIR"
+  fi
 
   local MOUNT_OUTPUT
   MOUNT_OUTPUT=$(sudo mount --bind "$SOURCE_DIR" "$TARGET_DIR" 2>&1)
@@ -45,9 +51,15 @@ function fxMountVmwareShare()
   local FOLDER_NAME="$1"
   local MOUNTPOINT_DIR="/mnt/hgfs/${1,,}/"
 
-  sudo mkdir -p "$MOUNTPOINT_DIR"
-  sudo umount "$MOUNTPOINT_DIR"
-  sudo touch "${MOUNTPOINT_DIR}This is the VM disk. The host dir is UNMOUNTED"
+    if [ ! -d "$MOUNTPOINT_DIR" ]; then
+
+      sudo mkdir -p "$MOUNTPOINT_DIR"
+      sudo touch "${MOUNTPOINT_DIR}This is the VM disk. The host dir is UNMOUNTED"
+
+    else
+
+      sudo umount "$MOUNTPOINT_DIR"
+    fi
 
   local MOUNT_OUTPUT
   MOUNT_OUTPUT=$(sudo vmhgfs-fuse ".host:/$FOLDER_NAME" "${MOUNTPOINT_DIR}" -o allow_other 2>&1)
