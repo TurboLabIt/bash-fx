@@ -17,10 +17,6 @@ function fxMountBind()
 
     sudo mkdir -p "$TARGET_DIR"
     sudo touch "${TARGET_DIR}This is the mountpoint. The target directory is UNMOUNTED"
-
-    else
-
-      sudo umount "$TARGET_DIR"
   fi
 
   local MOUNT_OUTPUT
@@ -55,10 +51,6 @@ function fxMountVmwareShare()
 
       sudo mkdir -p "$MOUNTPOINT_DIR"
       sudo touch "${MOUNTPOINT_DIR}This is the VM disk. The host dir is UNMOUNTED"
-
-    else
-
-      sudo umount "$MOUNTPOINT_DIR"
     fi
 
   local MOUNT_OUTPUT
