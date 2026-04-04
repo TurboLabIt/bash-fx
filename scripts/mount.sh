@@ -28,6 +28,7 @@ function fxMountBind()
     fxCatastrophicError "Unable to mount the folder: $MOUNT_OUTPUT"
   fi
 
+  echo ""
   ls -l --color=always "${TARGET_DIR}"
 }
 
@@ -58,5 +59,6 @@ function fxMountVmwareShare()
     fxCatastrophicError "Unable to mount the folder: $MOUNT_OUTPUT"
   fi
 
+  echo ""
   ls -l --color=always "${MOUNTPOINT_DIR}"
 }
