@@ -22,7 +22,6 @@ function lockCheck()
   
     fxCatastrophicError "🔒 Lockfile detected. It looks like this script is already running!" "proceed"
 
-    fxTitle "Lockfile"
     ls -l "${LOCKFILE}"
 
     echo ""
@@ -33,7 +32,7 @@ function lockCheck()
     exit
   fi
 
-  fxTitle "🔒 Creating lockfile in ##${LOCKFILE}##..."
+  fxOK "🔒 Creating lockfile in ##${LOCKFILE}##..."
   touch "$LOCKFILE"
 }
 
