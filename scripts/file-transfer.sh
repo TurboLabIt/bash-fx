@@ -126,5 +126,5 @@ function fxMirrorSsh()
     fxCountdown
   fi
 
-  #"${RCLONE_FULL_COMMAND[@]}"
+  "${RCLONE_FULL_COMMAND[@]}"
 }
