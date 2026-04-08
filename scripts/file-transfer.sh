@@ -47,19 +47,27 @@ function fxMirrorSsh()
   fi
 
   if [ -z "${REMOTE_USER}" ]; then
-    fxCatastrophicError "Please provide the remote username"
+
+    fxCatastrophicError "Please provide the remote username" 0
+    return 255
   fi
 
   if [ -z "${REMOTE_HOST}" ]; then
-    fxCatastrophicError "Please provide the remote hostname"
+
+    fxCatastrophicError "Please provide the remote hostname" 0
+    return 255
   fi
 
   if [ -z "${REMOTE_PATH}" ]; then
-    fxCatastrophicError "Please provide the remote path"
+
+    fxCatastrophicError "Please provide the remote path" 0
+    return 255
   fi
 
   if [ -z "${LOCAL_PATH}" ]; then
-    fxCatastrophicError "Please provide the local path"
+
+    fxCatastrophicError "Please provide the local path" 0
+    return 255
   fi
 
   local SFTP_PATH=":sftp:${REMOTE_PATH}"
@@ -81,7 +89,8 @@ function fxMirrorSsh()
 
   else
 
-    fxCatastrophicError "Direction must be 'from' or 'to'"
+    fxCatastrophicError "Direction must be 'from' or 'to'" 0
+    return 255
   fi
 
   local -a RCLONE_FULL_COMMAND=(
@@ -117,5 +126,5 @@ function fxMirrorSsh()
     fxCountdown
   fi
 
-  "${RCLONE_FULL_COMMAND[@]}"
+  #"${RCLONE_FULL_COMMAND[@]}"
 }
