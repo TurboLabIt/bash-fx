@@ -1,4 +1,4 @@
-## Usage: fxMirrorFromSsh "example.com" "/var/www/source" "/var/www/destination" <"root">
+## Usage: fxMirrorFromSsh "example.com" "/var/www/source" "/var/www/destination" <"root"> <"2222">
 ## Result: remote:/var/www/source/file.txt => local:/var/www/destination/file.txt
 ##         The CONTENTS of /var/www/source are synced INTO /var/www/destination.
 ##         It does NOT create /var/www/destination/source/
@@ -8,13 +8,14 @@ function fxMirrorFromSsh()
   local REMOTE_PATH="${2}"
   local LOCAL_DESTINATION="${3}"
   local REMOTE_USER="${4}"
-  local DELAY_OPT="${5}"
+  local REMOTE_PORT="${5}"
+  local DELAY_OPT="${6}"
 
-  fxMirrorSsh "from" "${REMOTE_HOST}" "${REMOTE_PATH}" "${LOCAL_DESTINATION}" "${REMOTE_USER}" "${DELAY_OPT}"
+  fxMirrorSsh "from" "${REMOTE_HOST}" "${REMOTE_PATH}" "${LOCAL_DESTINATION}" "${REMOTE_USER}" "${REMOTE_PORT}" "${DELAY_OPT}"
 }
 
 
-## Usage: fxMirrorToSsh "/var/www/source" "example.com" "/var/www/destination" <"root">
+## Usage: fxMirrorToSsh "/var/www/source" "example.com" "/var/www/destination" <"root"> <"2222">
 ## Result: local:/var/www/source/file.txt => remote:/var/www/destination/file.txt
 ##         The CONTENTS of /var/www/source are synced INTO /var/www/destination.
 ##         It does NOT create /var/www/destination/source/
@@ -24,9 +25,10 @@ function fxMirrorToSsh()
   local REMOTE_HOST="${2}"
   local REMOTE_PATH="${3}"
   local REMOTE_USER="${4}"
-  local DELAY_OPT="${5}"
+  local REMOTE_PORT="${5}"
+  local DELAY_OPT="${6}"
 
-  fxMirrorSsh "to" "${REMOTE_HOST}" "${REMOTE_PATH}" "${LOCAL_SOURCE}" "${REMOTE_USER}" "${DELAY_OPT}"
+  fxMirrorSsh "to" "${REMOTE_HOST}" "${REMOTE_PATH}" "${LOCAL_SOURCE}" "${REMOTE_USER}" "${REMOTE_PORT}" "${DELAY_OPT}"
 }
 
 
@@ -37,7 +39,8 @@ function fxMirrorSsh()
   local REMOTE_PATH="${3}"
   local LOCAL_PATH="${4}"
   local REMOTE_USER="${5}"
-  local DELAY_OPT="${6}"
+  local REMOTE_PORT="${6}"
+  local DELAY_OPT="${7}"
 
   fxTitle "🪞 Mirroring!"
   if [ -z "$(command -v rclone)" ]; then
@@ -68,10 +71,19 @@ function fxMirrorSsh()
   local SRC DST LABEL_FROM LABEL_TO
 
   local SSH_TARGET="${REMOTE_HOST}"
+
   local REMOTE_LABEL="${REMOTE_HOST}:${REMOTE_PATH}"
   if [ -n "${REMOTE_USER}" ]; then
     SSH_TARGET="${REMOTE_USER}@${REMOTE_HOST}"
     REMOTE_LABEL="${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_PATH}"
+  fi
+
+  if [ -n "${REMOTE_PORT}" ]; then
+    if ! [[ "${REMOTE_PORT}" =~ ^[0-9]+$ ]]; then
+      fxCatastrophicError "REMOTE_PORT must be an integer, got '${REMOTE_PORT}'" 0
+      return 255
+    fi
+    SSH_TARGET="${SSH_TARGET} -p ${REMOTE_PORT}"
   fi
 
   if [ "${DIRECTION}" = "from" ]; then
