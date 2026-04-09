@@ -1,42 +1,42 @@
-## Usage: fxMirrorFromSsh "root" "example.com" "/var/www/source" "/var/www/destination"
+## Usage: fxMirrorFromSsh "example.com" "/var/www/source" "/var/www/destination" <"root">
 ## Result: remote:/var/www/source/file.txt => local:/var/www/destination/file.txt
 ##         The CONTENTS of /var/www/source are synced INTO /var/www/destination.
 ##         It does NOT create /var/www/destination/source/
 function fxMirrorFromSsh()
 {
-  local REMOTE_USER="${1}"
-  local REMOTE_HOST="${2}"
-  local REMOTE_PATH="${3}"
-  local LOCAL_DESTINATION="${4}"
+  local REMOTE_HOST="${1}"
+  local REMOTE_PATH="${2}"
+  local LOCAL_DESTINATION="${3}"
+  local REMOTE_USER="${4}"
   local DELAY_OPT="${5}"
 
-  fxMirrorSsh "from" "${REMOTE_USER}" "${REMOTE_HOST}" "${REMOTE_PATH}" "${LOCAL_DESTINATION}" "${DELAY_OPT}"
+  fxMirrorSsh "from" "${REMOTE_HOST}" "${REMOTE_PATH}" "${LOCAL_DESTINATION}" "${REMOTE_USER}" "${DELAY_OPT}"
 }
 
 
-## Usage: fxMirrorToSsh "/var/www/source" "root" "example.com" "/var/www/destination"
+## Usage: fxMirrorToSsh "/var/www/source" "example.com" "/var/www/destination" <"root">
 ## Result: local:/var/www/source/file.txt => remote:/var/www/destination/file.txt
 ##         The CONTENTS of /var/www/source are synced INTO /var/www/destination.
 ##         It does NOT create /var/www/destination/source/
 function fxMirrorToSsh()
 {
   local LOCAL_SOURCE="${1}"
-  local REMOTE_USER="${2}"
-  local REMOTE_HOST="${3}"
-  local REMOTE_PATH="${4}"
+  local REMOTE_HOST="${2}"
+  local REMOTE_PATH="${3}"
+  local REMOTE_USER="${4}"
   local DELAY_OPT="${5}"
 
-  fxMirrorSsh "to" "${REMOTE_USER}" "${REMOTE_HOST}" "${REMOTE_PATH}" "${LOCAL_SOURCE}" "${DELAY_OPT}"
+  fxMirrorSsh "to" "${REMOTE_HOST}" "${REMOTE_PATH}" "${LOCAL_SOURCE}" "${REMOTE_USER}" "${DELAY_OPT}"
 }
 
 
 function fxMirrorSsh()
 {
   local DIRECTION="${1}"
-  local REMOTE_USER="${2}"
-  local REMOTE_HOST="${3}"
-  local REMOTE_PATH="${4}"
-  local LOCAL_PATH="${5}"
+  local REMOTE_HOST="${2}"
+  local REMOTE_PATH="${3}"
+  local LOCAL_PATH="${4}"
+  local REMOTE_USER="${5}"
   local DELAY_OPT="${6}"
 
   fxTitle "🪞 Mirroring!"
@@ -44,12 +44,6 @@ function fxMirrorSsh()
 
     fxWarning "rclone is not installed. Installing it now..."
     curl https://rclone.org/install.sh | sudo bash
-  fi
-
-  if [ -z "${REMOTE_USER}" ]; then
-
-    fxCatastrophicError "Please provide the remote username" 0
-    return 255
   fi
 
   if [ -z "${REMOTE_HOST}" ]; then
@@ -73,11 +67,18 @@ function fxMirrorSsh()
   local SFTP_PATH=":sftp:${REMOTE_PATH}"
   local SRC DST LABEL_FROM LABEL_TO
 
+  local SSH_TARGET="${REMOTE_HOST}"
+  local REMOTE_LABEL="${REMOTE_HOST}:${REMOTE_PATH}"
+  if [ -n "${REMOTE_USER}" ]; then
+    SSH_TARGET="${REMOTE_USER}@${REMOTE_HOST}"
+    REMOTE_LABEL="${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_PATH}"
+  fi
+
   if [ "${DIRECTION}" = "from" ]; then
 
     SRC="${SFTP_PATH}"
     DST="${LOCAL_PATH}"
-    LABEL_FROM="${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_PATH}"
+    LABEL_FROM="${REMOTE_LABEL}"
     LABEL_TO="${LOCAL_PATH}"
 
   elif [ "${DIRECTION}" = "to" ]; then
@@ -85,7 +86,7 @@ function fxMirrorSsh()
     SRC="${LOCAL_PATH}"
     DST="${SFTP_PATH}"
     LABEL_FROM="${LOCAL_PATH}"
-    LABEL_TO="${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_PATH}"
+    LABEL_TO="${REMOTE_LABEL}"
 
   else
 
@@ -95,7 +96,7 @@ function fxMirrorSsh()
 
   local -a RCLONE_FULL_COMMAND=(
     rclone sync
-    --sftp-ssh "ssh ${REMOTE_USER}@${REMOTE_HOST}"
+    --sftp-ssh "ssh ${SSH_TARGET}"
     --sftp-disable-hashcheck
     --create-empty-src-dirs
     --links
