@@ -55,46 +55,42 @@ function fxPasswordHide()
 
 function fxSetWebPermissions()
 {
-  fxTitle "👮 Setting web permissions..."
+  fxTitle "👮 Setting web permissions (u=rwX,go=rX)..."
   
   local OWN_USER=$1
   local PROJECT_DIR=$2
-  local BACKGROUND=$3
   
   if [ -z "$OWN_USER" ] || [ -z "$PROJECT_DIR" ]; then
     fxCatastrophicError "fxSetWebPermissions: you must provide the user to be set as owner and the directory path"
   fi
-  
+
   if [ ! -d "$PROJECT_DIR" ]; then
     fxCatastrophicError "fxSetWebPermissions: the path ##$PROJECT_DIR## is not an existing directory"
   fi
-  
-  local PROJECT_DIR=${PROJECT_DIR%*/}/
-  
-  if [ ! -z "${BACKGROUND}" ] && [ "${BACKGROUND}" != 0 ]; then
-    local SUDOBACKGROUND="sudo -b"
-  else
-    local SUDOBACKGROUND="sudo" 
-  fi
-  
-   ${SUDOBACKGROUND} chmod ugo= "${PROJECT_DIR}" -R
-   ${SUDOBACKGROUND} chmod u=rwx,g=rX "${PROJECT_DIR}" -R
-  
+
+  PROJECT_DIR="${PROJECT_DIR%*/}/"
+
+  fxInfo "Working on ##${PROJECT_DIR}##"
+
+  sudo chown -R "${OWN_USER}:www-data" "${PROJECT_DIR}"
+  sudo find "${PROJECT_DIR}" -type d -exec chmod u=rwx,g=rxs,o=rx {} +
+  sudo find "${PROJECT_DIR}" -type f -exec chmod u=rw,go=r {} +
+  fxOK "Done"
+
   if [ -d "${PROJECT_DIR}scripts" ]; then
-    ${SUDOBACKGROUND} chmod u=rwx,g=rx "${PROJECT_DIR}scripts/"*.sh -R
-  else
-    fxWarning "${PROJECT_DIR}scripts/ not found"
-  fi
-  
-  if [ -d "${PROJECT_DIR}var" ]; then
-    ${SUDOBACKGROUND} chmod u=rwx,g=rwX "${PROJECT_DIR}var" -R
-  else
-    fxWarning "${PROJECT_DIR}var/ not found"
+
+    sudo find "${PROJECT_DIR}scripts" -type f -name "*.sh" -exec chmod u=rwx,g=rx,o= {} +
+    fxOK "scripts/*.sh done"
   fi
 
-  ${SUDOBACKGROUND} chown ${OWN_USER}:www-data "${PROJECT_DIR}" -R
+  if [ -d "${PROJECT_DIR}var" ]; then
+
+    sudo find "${PROJECT_DIR}var" -type d -exec chmod u=rwx,g=rwxs,o=rx {} +
+    sudo find "${PROJECT_DIR}var" -type f -exec chmod ug=rw,o=r {} +
+    fxOK "var/ done"
+  fi
   
-  fxTitle "📂 Listing ##${PROJECT_DIR}#"
+  fxTitle "📂 Listing ##${PROJECT_DIR}##"
   ls -la --color=always "${PROJECT_DIR}"
 }
 
