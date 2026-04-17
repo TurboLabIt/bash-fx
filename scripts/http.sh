@@ -165,3 +165,37 @@ function fxCheckHttpsCertMulti()
 
   fi
 }
+
+
+function fxTestHttpRedirect()
+{
+  local SOURCE_URL="$1"
+  local TARGET_URL="${2:-}"
+  local HTTP_CODE="${3:-301}"
+
+  fxTitle "Running fxTestHttpRedirect against $SOURCE_URL"
+
+  local HTTP_RESPONSE HTTP_STATUS HTTP_LOCATION
+  HTTP_RESPONSE=$(curl -sS -k -o /dev/null -w '%{http_code} %{redirect_url}' --max-time 10 "$SOURCE_URL" 2>/dev/null)
+  HTTP_STATUS=${HTTP_RESPONSE%% *}
+  HTTP_LOCATION=${HTTP_RESPONSE#* }
+
+  if [ -z "$HTTP_STATUS" ] || [ "$HTTP_STATUS" = "000" ]; then
+    echo -e "❌ \e[1;31m$SOURCE_URL: no response\e[0m"
+    return
+  fi
+
+  if [ "$HTTP_STATUS" = "$HTTP_CODE" ]; then
+    echo "✅ $SOURCE_URL returned $HTTP_STATUS as expected"
+  else
+    echo -e "❌ \e[1;31m$SOURCE_URL returned $HTTP_STATUS, expected $HTTP_CODE\e[0m"
+  fi
+
+  if [ -n "$TARGET_URL" ]; then
+    if [ "$HTTP_LOCATION" = "$TARGET_URL" ]; then
+      echo "✅ Location matches: $HTTP_LOCATION"
+    else
+      echo -e "❌ \e[1;31mLocation mismatch: got '$HTTP_LOCATION', expected '$TARGET_URL'\e[0m"
+    fi
+  fi
+}
