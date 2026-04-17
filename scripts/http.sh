@@ -198,4 +198,35 @@ function fxTestHttpRedirect()
       echo -e "❌ \e[1;31mLocation mismatch: got '$HTTP_LOCATION', expected '$TARGET_URL'\e[0m"
     fi
   fi
+
+  local FINAL_INFO FINAL_STATUS FINAL_SIZE NUM_REDIRECTS
+  FINAL_INFO=$(curl -sS -k -L -o /dev/null -w '%{http_code} %{size_download} %{num_redirects}' --max-time 30 "$SOURCE_URL" 2>/dev/null)
+  read -r FINAL_STATUS FINAL_SIZE NUM_REDIRECTS <<< "$FINAL_INFO"
+
+  if [ -z "$FINAL_STATUS" ] || [ "$FINAL_STATUS" = "000" ]; then
+    echo -e "❌ \e[1;31mFinal response: no response following redirects\e[0m"
+  elif [ "$FINAL_STATUS" = "200" ] && [ "$FINAL_SIZE" -gt 0 ]; then
+    echo "✅ Final response: $FINAL_STATUS"
+  elif [ "$FINAL_STATUS" = "200" ]; then
+    echo -e "❌ \e[1;31mFinal response: $FINAL_STATUS but empty content\e[0m"
+  else
+    echo -e "❌ \e[1;31mFinal response: $FINAL_STATUS (expected 200)\e[0m"
+  fi
+
+  if [ -n "$NUM_REDIRECTS" ] && [ "$NUM_REDIRECTS" -gt 1 ]; then
+    echo ""
+    echo "Redirect chain:"
+    local CHAIN_URL="$SOURCE_URL"
+    local HOP_COUNT=0
+    local MAX_HOPS=10
+    while [ -n "$CHAIN_URL" ] && [ "$HOP_COUNT" -le "$MAX_HOPS" ]; do
+      local HOP_RESPONSE HOP_STATUS HOP_LOCATION
+      HOP_RESPONSE=$(curl -sS -k -o /dev/null -w '%{http_code} %{redirect_url}' --max-time 10 "$CHAIN_URL" 2>/dev/null)
+      HOP_STATUS=${HOP_RESPONSE%% *}
+      HOP_LOCATION=${HOP_RESPONSE#* }
+      echo "  $CHAIN_URL → $HOP_STATUS"
+      CHAIN_URL="$HOP_LOCATION"
+      HOP_COUNT=$((HOP_COUNT + 1))
+    done
+  fi
 }
