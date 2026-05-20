@@ -79,19 +79,19 @@ function fxCheckHttpsCert()
 
     local EXPIRE_DATE=$(LC_ALL=en_US.UTF-8 date -d "$EXPIRE_RAW" '+%B %d, %Y' 2>/dev/null || echo "$EXPIRE_RAW")
 
-    if echo "$CURL_OUT_K" | grep -qi 'self-signed certificate'; then
-
-      ## Self-signed
-      echo -e "❌ \e[1;31mThe certificate is self-signed. Expiration date: 📅 $EXPIRE_DATE\e[0m"
-      local CERT_SANS=$(echo | openssl s_client -connect "$HOST:443" -servername "$HOST" 2>/dev/null | openssl x509 -noout -ext subjectAltName 2>/dev/null | grep -oP 'DNS:\K[^ ,]+' | paste -sd',' | sed 's/,/, /g')
-      [ -n "$CERT_SANS" ] && echo -e "❌ \e[1;31mThe certificate is valid for: $CERT_SANS\e[0m"
-
-    elif [ "$CURL_RC" -eq 0 ]; then
+    if [ "$CURL_RC" -eq 0 ]; then
 
       ## Valid
       echo "✅ HTTPS certificate is good until 📅 $EXPIRE_DATE"
       local CERT_SANS=$(echo | openssl s_client -connect "$HOST:443" -servername "$HOST" 2>/dev/null | openssl x509 -noout -ext subjectAltName 2>/dev/null | grep -oP 'DNS:\K[^ ,]+' | paste -sd',' | sed 's/,/, /g')
       [ -n "$CERT_SANS" ] && echo "✅ The certificate is valid for: $CERT_SANS"
+
+    elif echo "$CURL_OUT_K" | grep -qi 'self-signed certificate'; then
+
+      ## Self-signed
+      echo -e "❌ \e[1;31mThe certificate is self-signed. Expiration date: 📅 $EXPIRE_DATE\e[0m"
+      local CERT_SANS=$(echo | openssl s_client -connect "$HOST:443" -servername "$HOST" 2>/dev/null | openssl x509 -noout -ext subjectAltName 2>/dev/null | grep -oP 'DNS:\K[^ ,]+' | paste -sd',' | sed 's/,/, /g')
+      [ -n "$CERT_SANS" ] && echo -e "❌ \e[1;31mThe certificate is valid for: $CERT_SANS\e[0m"
 
     else
 
