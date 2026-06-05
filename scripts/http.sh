@@ -230,3 +230,40 @@ function fxTestHttpRedirect()
     done
   fi
 }
+
+
+## ☁️ Cloudflare cache purge | https://developers.cloudflare.com/api/resources/cache/methods/purge/
+## $1: a Cloudflare API Token with Zone > Cache Purge permission
+## $2: the zone ID(s) to purge. Multiple zones are supported: "aaa111... bbb222..."
+function fxCloudFlareCacheClear()
+{
+  local CLOUDFLARE_API_KEY="$1"
+  local CLOUDFLARE_ZONE_ID="$2"
+
+  fxTitle "☁️ Purging the Cloudflare cache..."
+
+  if [ -z "${CLOUDFLARE_API_KEY}" ]; then
+    fxCatastrophicError "Cloudflare API key not provided! Cache NOT purged"
+  fi
+
+  if [ -z "${CLOUDFLARE_ZONE_ID}" ]; then
+    fxCatastrophicError "Cloudflare zone ID not provided! Cache NOT purged"
+  fi
+
+  local CLOUDFLARE_PURGE_ZONE_ID CLOUDFLARE_PURGE_RESULT
+  for CLOUDFLARE_PURGE_ZONE_ID in ${CLOUDFLARE_ZONE_ID}; do
+
+    CLOUDFLARE_PURGE_RESULT=$(
+      curl -sS -X POST "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_PURGE_ZONE_ID}/purge_cache" \
+        -H "Authorization: Bearer ${CLOUDFLARE_API_KEY}" -H "Content-Type: application/json" \
+        --data '{"purge_everything":true}'
+    )
+
+    if echo "${CLOUDFLARE_PURGE_RESULT}" | grep -q '"success": *true'; then
+      fxOK "Cloudflare zone ##${CLOUDFLARE_PURGE_ZONE_ID}## purged"
+    else
+      fxWarning "Cloudflare cache purge FAILED for zone ##${CLOUDFLARE_PURGE_ZONE_ID}##"
+      echo "${CLOUDFLARE_PURGE_RESULT}"
+    fi
+  done
+}
