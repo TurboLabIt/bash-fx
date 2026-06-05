@@ -96,8 +96,10 @@ function fxCatastrophicError()
 
   if [ -z "$2" ]; then
     fxEndFooter failure
-    exit
+    exit 1
   fi
+
+  return 1
 }
 
 
