@@ -47,7 +47,15 @@ else
 
   fxTitle "⏬ Updating..."
   cd "$INSTALL_DIR"
-  git fetch --depth 1
+
+  # Force SSH to prompt on the real terminal, not a hidden GUI dialog: under sudo-rs
+  # DISPLAY is inherited (=:0), which can divert the host-key prompt to a graphical
+  # askpass and leave the terminal frozen at "Updating...". Bound the connect too.
+  SSH_ASKPASS_REQUIRE=never \
+  GIT_SSH_COMMAND="ssh -o ConnectTimeout=15" \
+  git fetch --depth 1 < /dev/tty \
+    || fxCatastrophicError "Can't fetch ${SCRIPT_NAME} from $(git remote get-url origin) — if it's an SSH remote, root has no GitHub key/known_hosts. Use an HTTPS 'origin' or give root a key."
+
   git reset --hard @{upstream}
 
   fxTitle "🗜️ Pruning..."
