@@ -48,6 +48,10 @@ else
   fxTitle "⏬ Updating..."
   cd "$INSTALL_DIR"
 
+  ## trust the repo for the git commands below only: root may not own it (dev boxes), and
+  ## "config --global --add" would append a duplicate line to root's .gitconfig on every run
+  export GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=safe.directory GIT_CONFIG_VALUE_0="${INSTALL_DIR%/}"
+
   # Force SSH to prompt on the real terminal, not a hidden GUI dialog: under sudo-rs
   # DISPLAY is inherited (=:0), which can divert the host-key prompt to a graphical
   # askpass and leave the terminal frozen at "Updating...". Bound the connect too.
