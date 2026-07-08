@@ -65,3 +65,6 @@ else
   fxTitle "🗜️ Pruning..."
   git gc --prune=all
 fi
+
+## exec-bit changes on disk must never count as local modifications
+git config core.fileMode false
