@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 SCRIPT_NAME=bash-fx
 
+## zzupdate & friends run several setup.sh back-to-back, each re-updating bash-fx: skip if freshly fetched
+if [ -n "$(find /usr/local/turbolab.it/bash-fx/.git/FETCH_HEAD -mmin -2 2>/dev/null)" ]; then
+
+  echo "🐇 bash-fx was updated less than 2 minutes ago, skipping"
+  exit 0
+fi
+
 if [ -z $(command -v curl) ]; then sudo apt update && sudo apt install curl -y; fi
 
 ## begin
