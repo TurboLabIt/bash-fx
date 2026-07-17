@@ -32,6 +32,8 @@ function fxMirrorToSsh()
 }
 
 
+## If the remote SSH user can sudo without a password, the remote sftp-server runs as
+## root — read-only when direction is "from" — so root-only files get mirrored too.
 function fxMirrorSsh()
 {
   local DIRECTION="${1}"
@@ -86,6 +88,30 @@ function fxMirrorSsh()
     SSH_TARGET="${SSH_TARGET} -p ${REMOTE_PORT}"
   fi
 
+  local -a SFTP_SERVER_COMMAND_OPT=()
+  local SFTP_SERVER_BIN="/usr/lib/openssh/sftp-server"
+
+  if [ "${REMOTE_USER}" != "root" ]; then
+
+    ## SSH_TARGET stays unquoted: it may carry ` -p <port>`
+    if ssh -n ${SSH_TARGET} sudo -n test -x "${SFTP_SERVER_BIN}" > /dev/null 2>&1; then
+
+      local SFTP_SUDO_CMD="sudo -n ${SFTP_SERVER_BIN}"
+      if [ "${DIRECTION}" = "from" ]; then
+
+        ## -R: read-only sftp-server — a pull can never write to the remote
+        SFTP_SUDO_CMD="${SFTP_SUDO_CMD} -R"
+      fi
+
+      SFTP_SERVER_COMMAND_OPT=( --sftp-server-command "${SFTP_SUDO_CMD}" )
+      REMOTE_LABEL="${REMOTE_LABEL} (root via sudo)"
+
+    else
+
+      fxWarning "No passwordless sudo on the remote: mirroring as the SSH user, root-only files won't be transferred"
+    fi
+  fi
+
   if [ "${DIRECTION}" = "from" ]; then
 
     SRC="${SFTP_PATH}"
@@ -109,6 +135,7 @@ function fxMirrorSsh()
   local -a RCLONE_FULL_COMMAND=(
     rclone sync
     --sftp-ssh "ssh ${SSH_TARGET}"
+    "${SFTP_SERVER_COMMAND_OPT[@]}"
     --sftp-disable-hashcheck
     --create-empty-src-dirs
     --links
