@@ -1,4 +1,4 @@
-## Usage: fxMirrorFromSsh "example.com" "/var/www/source" "/var/www/destination" <"root"> <"2222">
+## Usage: fxMirrorFromSsh "example.com" "/var/www/source" "/var/www/destination" <"root"> <"2222"> <"no-delay"> <"with-logs">
 ## Result: remote:/var/www/source/file.txt => local:/var/www/destination/file.txt
 ##         The CONTENTS of /var/www/source are synced INTO /var/www/destination.
 ##         It does NOT create /var/www/destination/source/
@@ -10,12 +10,13 @@ function fxMirrorFromSsh()
   local REMOTE_USER="${4}"
   local REMOTE_PORT="${5}"
   local DELAY_OPT="${6}"
+  local WITH_LOGS_OPT="${7}"
 
-  fxMirrorSsh "from" "${REMOTE_HOST}" "${REMOTE_PATH}" "${LOCAL_DESTINATION}" "${REMOTE_USER}" "${REMOTE_PORT}" "${DELAY_OPT}"
+  fxMirrorSsh "from" "${REMOTE_HOST}" "${REMOTE_PATH}" "${LOCAL_DESTINATION}" "${REMOTE_USER}" "${REMOTE_PORT}" "${DELAY_OPT}" "${WITH_LOGS_OPT}"
 }
 
 
-## Usage: fxMirrorToSsh "/var/www/source" "example.com" "/var/www/destination" <"root"> <"2222">
+## Usage: fxMirrorToSsh "/var/www/source" "example.com" "/var/www/destination" <"root"> <"2222"> <"no-delay"> <"with-logs">
 ## Result: local:/var/www/source/file.txt => remote:/var/www/destination/file.txt
 ##         The CONTENTS of /var/www/source are synced INTO /var/www/destination.
 ##         It does NOT create /var/www/destination/source/
@@ -27,8 +28,9 @@ function fxMirrorToSsh()
   local REMOTE_USER="${4}"
   local REMOTE_PORT="${5}"
   local DELAY_OPT="${6}"
+  local WITH_LOGS_OPT="${7}"
 
-  fxMirrorSsh "to" "${REMOTE_HOST}" "${REMOTE_PATH}" "${LOCAL_SOURCE}" "${REMOTE_USER}" "${REMOTE_PORT}" "${DELAY_OPT}"
+  fxMirrorSsh "to" "${REMOTE_HOST}" "${REMOTE_PATH}" "${LOCAL_SOURCE}" "${REMOTE_USER}" "${REMOTE_PORT}" "${DELAY_OPT}" "${WITH_LOGS_OPT}"
 }
 
 
@@ -43,6 +45,7 @@ function fxMirrorSsh()
   local REMOTE_USER="${5}"
   local REMOTE_PORT="${6}"
   local DELAY_OPT="${7}"
+  local WITH_LOGS_OPT="${8}"
 
   fxTitle "🪞 Mirroring!"
   if [ -z "$(command -v rclone)" ]; then
@@ -132,6 +135,18 @@ function fxMirrorSsh()
     return 255
   fi
 
+  ## logs are excluded by default (webapp mirroring); "with-logs" mirrors them too
+  local -a LOG_FILTER_OPT=(
+    --exclude '*.log' --exclude '*.log.[0-9]*'
+    --filter='+ var/log/.gitignore' --filter='- var/log/**'
+    --filter='+ var/logs/.gitignore' --filter='- var/logs/**'
+  )
+
+  if [ "${WITH_LOGS_OPT}" = "with-logs" ]; then
+
+    LOG_FILTER_OPT=()
+  fi
+
   local -a RCLONE_FULL_COMMAND=(
     rclone sync
     --sftp-ssh "ssh ${SSH_TARGET}"
@@ -144,9 +159,7 @@ function fxMirrorSsh()
     --log-level ERROR
     --progress
     --delete-excluded
-    --exclude '*.log' --exclude '*.log.[0-9]*'
-    --filter='+ var/log/.gitignore' --filter='- var/log/**'
-    --filter='+ var/logs/.gitignore' --filter='- var/logs/**'
+    "${LOG_FILTER_OPT[@]}"
     --filter='+ var/cache/.gitignore' --filter='- var/cache/**'
     --filter='+ var/tmp/.gitignore' --filter='- var/tmp/**'
     --filter='+ var/session/.gitignore' --filter='- var/session/**'
