@@ -32,4 +32,7 @@ function fxHostnameRename()
 
   local CURRENT_HOSTNAME="$(hostname)"
   fxOK "Done. The current, updated hostname is: ##${CURRENT_HOSTNAME}##"
+
+  ## a shell caches the hostname in its prompt (\h) at login, so already-open shells stay stale
+  fxInfo "Run 'exec bash' (or re-login) to refresh your shell prompt"
 }
