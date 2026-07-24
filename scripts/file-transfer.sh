@@ -208,8 +208,9 @@ function fxMirrorSsh()
   if [ "${FAST_OPT}" = "fast" ]; then
 
     FAST_FILTER_OPT=(
-      --exclude 'pub/media/**'   --exclude 'var/import/**'
-      --exclude 'var/report/**'  --exclude 'generated/code/**'
+      --exclude 'pub/media/**'          --exclude 'var/import/**'
+      --exclude 'var/report/**'         --exclude 'generated/code/**'
+      --exclude 'wp-content/uploads/**'
       --exclude '*.pdf'
     )
   fi
@@ -247,7 +248,7 @@ function fxMirrorSsh()
 
   if [ "${FAST_OPT}" = "fast" ]; then
 
-    echo "Mode: ⚡ fast - skipping pub/media, var/import, var/report, generated/code, *.pdf"
+    echo "Mode: ⚡ fast - skipping pub/media, var/import, var/report, generated/code, wp-content/uploads, *.pdf"
   fi
 
   echo ""
