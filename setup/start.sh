@@ -52,13 +52,23 @@ else
   ## "config --global --add" would append a duplicate line to root's .gitconfig on every run
   export GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=safe.directory GIT_CONFIG_VALUE_0="${INSTALL_DIR%/}"
 
+  REMOTE_URL=$(git remote get-url origin 2>/dev/null)
+
   # Force SSH to prompt on the real terminal, not a hidden GUI dialog: under sudo-rs
   # DISPLAY is inherited (=:0), which can divert the host-key prompt to a graphical
   # askpass and leave the terminal frozen at "Updating...". Bound the connect too.
   SSH_ASKPASS_REQUIRE=never \
   GIT_SSH_COMMAND="ssh -o ConnectTimeout=15" \
-  git fetch --depth 1 < /dev/tty \
-    || fxCatastrophicError "Can't fetch ${SCRIPT_NAME} from $(git remote get-url origin) — if it's an SSH remote, root has no GitHub key/known_hosts. Use an HTTPS 'origin' or give root a key."
+  git fetch --depth 1 < /dev/tty || {
+
+    # blame what actually broke: only an SSH remote can fail on root's missing key,
+    # an HTTPS one fails on connectivity/DNS (and git already printed the real reason)
+    if [[ "$REMOTE_URL" =~ ^(ssh://|[^/]+@[^/]+:) ]]; then
+      fxCatastrophicError "Can't fetch ${SCRIPT_NAME} from ${REMOTE_URL} — it's an SSH remote and root has no GitHub key/known_hosts. Use an HTTPS 'origin' or give root a key."
+    else
+      fxCatastrophicError "Can't fetch ${SCRIPT_NAME} from ${REMOTE_URL} — check connectivity/DNS, see git's error above."
+    fi
+  }
 
   git reset --hard @{upstream}
 
