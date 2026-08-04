@@ -184,3 +184,88 @@ function fxSshResetUserSshPermissions()
   sudo ls -lah "${USER_HOME}.ssh"
 }
 
+
+function fxSshGenerateUserKey()
+{
+  local INPUT_USERNAME=$1
+
+  if [ -z "${INPUT_USERNAME}" ]; then
+    fxCatastrophicError "fxSshGenerateUserKey: you must provide the username to generate the key for"
+  fi
+
+  local USER_HOME=$(fxGetUserHomePath "${INPUT_USERNAME}")
+
+  if [ -z "${USER_HOME}" ]; then
+    fxCatastrophicError "fxSshGenerateUserKey: ##${INPUT_USERNAME}## doesn't exist or has no home directory"
+  fi
+
+  local USER_SSH_DIR=${USER_HOME}.ssh/
+  local USER_SSH_KEY=${USER_SSH_DIR}id_rsa
+  local USER_SSH_OWNER=${INPUT_USERNAME}:$(id -gn ${INPUT_USERNAME})
+  local USER_SSH_DIR_CHANGED=
+
+  ## the key must belong to its user: switch to it, unless we already are it
+  if [ "$(id -un)" = "${INPUT_USERNAME}" ]; then
+
+    local SUDO_CMD=
+    local SUDO_USER_CMD=
+
+  else
+
+    local SUDO_CMD=sudo
+    local SUDO_USER_CMD="sudo -u ${INPUT_USERNAME} -H"
+  fi
+
+  fxTitle "🔐 SSH key of ##${INPUT_USERNAME}##"
+
+  if [ ! -f "${USER_SSH_KEY}" ]; then
+
+    fxInfo "##${USER_SSH_KEY}## not found: generating it now..."
+
+    ${SUDO_CMD} mkdir -p "${USER_SSH_DIR}"
+    ${SUDO_CMD} chown "${USER_SSH_OWNER}" "${USER_SSH_DIR}"
+    ${SUDO_CMD} chmod u=rwx,go= "${USER_SSH_DIR}"
+
+    ${SUDO_USER_CMD} ssh-keygen -t rsa -N "" -f "${USER_SSH_KEY}" \
+      -C "${INPUT_USERNAME} on $(hostname) by ${SCRIPT_NAME:-bash-fx}"
+
+    if [ ! -f "${USER_SSH_KEY}" ]; then
+      fxCatastrophicError "fxSshGenerateUserKey: key generation FAILED"
+    fi
+
+    ## a brand new .ssh has no known_hosts: without it every git clone dies on host key verification
+    if [ ! -f "${USER_SSH_DIR}known_hosts" ]; then
+      fxSshSetKnownHosts "${INPUT_USERNAME}"
+    fi
+
+    USER_SSH_DIR_CHANGED=1
+    fxOK "SSH key generated"
+
+  elif [ ! -f "${USER_SSH_KEY}.pub" ]; then
+
+    ## the public key is the one everybody looks for: rebuild it, never touch the private one
+    fxWarning "##${USER_SSH_KEY}.pub## not found: rebuilding it from ##${USER_SSH_KEY}##..."
+    ${SUDO_USER_CMD} ssh-keygen -y -f "${USER_SSH_KEY}" | ${SUDO_CMD} tee "${USER_SSH_KEY}.pub" > /dev/null
+    USER_SSH_DIR_CHANGED=1
+
+  else
+
+    fxInfo "##${USER_SSH_KEY}## already exists, skipping 🦘"
+  fi
+
+  ## whatever we just wrote as root (known_hosts, id_rsa.pub) belongs to the user
+  if [ ! -z "${USER_SSH_DIR_CHANGED}" ]; then
+
+    ${SUDO_CMD} chown -R "${USER_SSH_OWNER}" "${USER_SSH_DIR}"
+    fxSshResetUserSshPermissions "${INPUT_USERNAME}"
+  fi
+
+  if [ ! -f "${USER_SSH_KEY}.pub" ]; then
+    fxCatastrophicError "fxSshGenerateUserKey: ##${USER_SSH_KEY}.pub## not found!"
+  fi
+
+  fxTitle "🔑 Public SSH key of ##${INPUT_USERNAME}##"
+  fxInfo "${USER_SSH_KEY}.pub"
+  fxMessage "$(${SUDO_CMD} cat "${USER_SSH_KEY}.pub")"
+}
+
