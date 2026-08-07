@@ -59,53 +59,51 @@ function fxSshGetUserSshPath()
 }
 
 
-function fxSshSetKnownHosts()
+## the system-wide known hosts file: it works for every user, no matter which
+## $HOME ssh ends up with (cron, sudo, ...)
+KNOWN_HOSTS_FULLPATH=/etc/ssh/ssh_known_hosts
+
+
+function fxSshAddKnownHost()
 {
-  local INPUT_USERNAME=$1
-  
-  if [ ! -z "${INPUT_USERNAME}" ]; then
+  local INPUT_HOSTNAME=$1
+  local INPUT_HOST_KEYS=$2
 
-    fxTitle  "⛲ Setting KnownHosts for ##${INPUT_USERNAME}##"
-    local SUDO_USER="sudo -u ${INPUT_USERNAME} -H"
-    local SUDO_USER_HOME=$(eval echo ~$INPUT_USERNAME)
+  if ssh-keygen -F "${INPUT_HOSTNAME}" -f "${KNOWN_HOSTS_FULLPATH}" > /dev/null 2>&1; then
 
-  else
-  
-    fxTitle "⛲ Setting KnownHosts..."
-    local SUDO_USER_HOME=$HOME
+    fxOK "##${INPUT_HOSTNAME}## is already known"
+    return 0
   fi
 
-  local KNOWN_FILE=${SUDO_USER_HOME}/.ssh/known_hosts
-  fxInfo "${KNOWN_FILE}"
-  
-  #fxTitle "🧹 Removing Bitbucket..."
-  #${SUDO_USER} ssh-keygen -R bitbucket.org
-  
-  #fxTitle "🧹 Removing GitHub..."
-  #${SUDO_USER} ssh-keygen -R github.com
-  
-  #fxTitle "✂ Trimming..."
-  #local KNOWN_FILE_CONTENT=$(cat "${KNOWN_FILE}")
-  #local KNOWN_FILE_CONTENT=$(fxTrim "${KNOWN_FILE_CONTENT}")
-  #echo "${KNOWN_FILE_CONTENT}" > ${KNOWN_FILE}
-  
-  fxTitle "🍋 Adding Bitbucket..."
-  #${SUDO_USER} echo -en '\n' >> ${KNOWN_FILE}
-  ${SUDO_USER} curl https://bitbucket.org/site/ssh > ${KNOWN_FILE}
-  
+  if [ -z "${INPUT_HOST_KEYS}" ]; then
+
+    fxCatastrophicError "Unable to fetch the ##${INPUT_HOSTNAME}## host keys" 0
+    return 255
+  fi
+
+  echo "${INPUT_HOST_KEYS}" | sudo tee -a "${KNOWN_HOSTS_FULLPATH}" > /dev/null
+  sudo chmod u=rw,go=r "${KNOWN_HOSTS_FULLPATH}"
+  fxOK "##${INPUT_HOSTNAME}## is now known"
+}
+
+
+function fxSshSetKnownHosts()
+{
+  fxTitle "⛲ Setting the known hosts..."
+  fxInfo "${KNOWN_HOSTS_FULLPATH}"
+
+  fxTitle "Installing jq..."
+  if [ -z "$(command -v jq)" ]; then
+    sudo apt update && sudo apt install jq -y
+  fi
+
+  ## the host keys are fetched over https, so they are verified by TLS
   fxTitle "🍋 Adding GitHub..."
-  ${SUDO_USER} echo -en '\n' >> ${KNOWN_FILE}
-  ${SUDO_USER} echo -en '\n' >> ${KNOWN_FILE}
-  ${SUDO_USER} curl https://raw.githubusercontent.com/TurboLabIt/webstackup/master/config/ssh/github-fingerprint >> ${KNOWN_FILE}
-  
-  fxTitle "✂ Trimming..."
-  local KNOWN_FILE_CONTENT=$(cat "${KNOWN_FILE}")
-  local KNOWN_FILE_CONTENT=$(fxTrim "${KNOWN_FILE_CONTENT}")
-  echo "${KNOWN_FILE_CONTENT}" > ${KNOWN_FILE}
-  ${SUDO_USER} echo -en '\n' >> ${KNOWN_FILE}
-  
-  fxTitle "Final ${KNOWN_FILE}"
-  cat "${KNOWN_FILE}"
+  fxSshAddKnownHost github.com "$(curl -s https://api.github.com/meta | jq -r '.ssh_keys[] | "github.com " + .')"
+
+  fxTitle "🪣 Adding Bitbucket..."
+  ## this one is served in known_hosts format already
+  fxSshAddKnownHost bitbucket.org "$(curl -s https://bitbucket.org/site/ssh)"
 }
 
 
@@ -233,10 +231,8 @@ function fxSshGenerateUserKey()
       fxCatastrophicError "fxSshGenerateUserKey: key generation FAILED"
     fi
 
-    ## a brand new .ssh has no known_hosts: without it every git clone dies on host key verification
-    if [ ! -f "${USER_SSH_DIR}known_hosts" ]; then
-      fxSshSetKnownHosts "${INPUT_USERNAME}"
-    fi
+    ## without the host keys every git clone dies on host key verification
+    fxSshSetKnownHosts
 
     USER_SSH_DIR_CHANGED=1
     fxOK "SSH key generated"
