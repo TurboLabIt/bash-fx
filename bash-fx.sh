@@ -67,7 +67,7 @@ function fxOK()
 {
   local MESSAGE=$1
   if [ -z "$MESSAGE" ]; then
-    MESSSAGE=OK
+    MESSAGE=OK
   fi
 
   echo -e "\e[1;32m✔ ${MESSAGE}\e[0m"
