@@ -64,7 +64,7 @@ function fxMirrorSsh()
   if [ -z "$(command -v rsync)" ]; then
 
     fxWarning "rsync is not installed. Installing it now..."
-    sudo apt update && sudo apt install rsync -y
+    fxAptUpdate && sudo apt install rsync -y
   fi
 
   if [ -z "${REMOTE_HOST}" ]; then

@@ -94,7 +94,7 @@ function fxSshSetKnownHosts()
 
   fxTitle "Installing jq..."
   if [ -z "$(command -v jq)" ]; then
-    sudo apt update && sudo apt install jq -y
+    fxAptUpdate && sudo apt install jq -y
   fi
 
   ## the host keys are fetched over https, so they are verified by TLS

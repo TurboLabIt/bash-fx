@@ -26,7 +26,7 @@ else
 fi
 
 if [ -z "$(command -v git)" ]; then
-  sudo apt update && sudo apt install git -y
+  fxAptUpdate && sudo apt install git -y
 fi
 
 ## /etc/ config directory
