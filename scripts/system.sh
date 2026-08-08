@@ -36,3 +36,34 @@ function fxHostnameRename()
   ## a shell caches the hostname in its prompt (\h) at login, so already-open shells stay stale
   fxInfo "Run 'exec bash' (or re-login) to refresh your shell prompt"
 }
+
+
+function fxAptUpdate()
+{
+  ## refresh the apt cache, but only if it's older than $1 minutes (default: 15)
+  ## pass 0 to force it: mandatory right after adding a new repo!
+  local MAX_AGE_MINUTES="${1:-15}"
+
+  ## apt has no built-in "update only if stale" option, so we look at the cache's mtime.
+  ## pkgcache.bin is rebuilt by apt itself on every successful update
+  ## (/var/lib/apt/periodic/update-success-stamp would be stricter, but it's touched by a hook
+  ## shipped with update-notifier-common, which is missing on minimal servers and in containers)
+  local APT_CACHE_FILE=/var/cache/apt/pkgcache.bin
+
+  if [ "$MAX_AGE_MINUTES" -gt 0 ] && [ -f "$APT_CACHE_FILE" ] &&
+     [ -n "$(find "$APT_CACHE_FILE" -maxdepth 0 -mmin "-${MAX_AGE_MINUTES}" 2>/dev/null)" ]; then
+
+    fxInfo "The apt cache is younger than ${MAX_AGE_MINUTES} min: skipping ##apt update##"
+    return 0
+  fi
+
+  fxTitle "📦 Updating the apt cache..."
+
+  if ! sudo apt-get update; then
+
+    fxCatastrophicError "##apt update## failed" 0
+    return 255
+  fi
+
+  fxOK "apt cache updated"
+}
