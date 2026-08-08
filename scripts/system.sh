@@ -59,7 +59,9 @@ function fxAptUpdate()
 
   fxTitle "📦 Updating the apt cache..."
 
-  if ! sudo apt-get update; then
+  ## -qq: warnings and errors only
+  ## short timeouts + 1 retry: an unreachable mirror makes apt retry silently for minutes, which looks like a freeze
+  if ! sudo apt-get update -qq -o Acquire::Retries=1 -o Acquire::http::Timeout=20 -o Acquire::https::Timeout=20; then
 
     fxCatastrophicError "##apt update## failed" 0
     return 255
