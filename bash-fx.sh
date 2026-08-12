@@ -51,6 +51,19 @@ function fxTitle()
 }
 
 
+##
+## A banner announcing which part of a longer run is starting, i.e. which host of a list
+## is being worked on. Louder than fxTitle on purpose: it's meant to be findable when
+## scrolling back through the output of something which ran for a while
+##
+function fxSection()
+{
+  echo ""
+  echo -e "\e[1;43m======= ${1} =======\e[0m"
+  echo ""
+}
+
+
 function fxMessage()
 {
   echo -e "\e[1;45m${1}\e[0m"
