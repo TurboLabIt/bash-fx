@@ -16,17 +16,17 @@ function fxGitAsOwner()
 }
 
 
-function fxPushAndShallow()
+function fxGitPushAndShallow()
 {
   local PROJECT_DIR=${1%/}
 
   if [ -z "${PROJECT_DIR}" ] || [ ! -d "${PROJECT_DIR}" ]; then
-    fxCatastrophicError "fxPushAndShallow: ##${1}## doesn't exist"
+    fxCatastrophicError "fxGitPushAndShallow: ##${1}## doesn't exist"
   fi
 
   ## it's a file, not a directory, on submodules and worktrees
   if [ ! -e "${PROJECT_DIR}/.git" ]; then
-    fxCatastrophicError "fxPushAndShallow: ##${PROJECT_DIR}## is not a git repository"
+    fxCatastrophicError "fxGitPushAndShallow: ##${PROJECT_DIR}## is not a git repository"
   fi
 
   fxTitle "☁️ Git pushing..."
