@@ -54,6 +54,47 @@ function fxGitPushAndShallow()
 }
 
 
+function fxGitPullAndShallow()
+{
+  local PROJECT_DIR=${1%/}
+
+  if [ -z "${PROJECT_DIR}" ] || [ ! -d "${PROJECT_DIR}" ]; then
+    fxCatastrophicError "fxGitPullAndShallow: ##${1}## doesn't exist"
+  fi
+
+  ## it's a file, not a directory, on submodules and worktrees
+  if [ ! -e "${PROJECT_DIR}/.git" ]; then
+    fxCatastrophicError "fxGitPullAndShallow: ##${PROJECT_DIR}## is not a git repository"
+  fi
+
+  fxTitle "⬇️ Getting the latest revision..."
+  local GIT_BRANCH=$(fxGitAsOwner "${PROJECT_DIR}" rev-parse --abbrev-ref HEAD)
+
+  ## fetch+reset instead of pull: --depth=1 always re-shallows, moving the boundary to the
+  ## newly-fetched tip, so only the very last revision is available locally. It also never
+  ## needs a merge base, which a depth=1 repo wouldn't have on a forced update
+  fxGitAsOwner "${PROJECT_DIR}" fetch --depth=1 origin "${GIT_BRANCH}"
+  local GIT_FETCH_RESULT=$?
+
+  if [ "${GIT_FETCH_RESULT}" != 0 ]; then
+
+    fxWarning "The fetch FAILED: keeping the current revision"
+    return "${GIT_FETCH_RESULT}"
+  fi
+
+  ## this is a deploy-only copy: any local change must be discarded
+  fxGitAsOwner "${PROJECT_DIR}" reset --hard FETCH_HEAD
+
+  fxTitle "✂️ Re-shallowing the repo..."
+  ## the fetch only moves the boundary: it's the gc which actually reclaims the space,
+  ## and the reflog would keep the orphaned objects reachable
+  fxGitAsOwner "${PROJECT_DIR}" reflog expire --expire=now --all
+  fxGitAsOwner "${PROJECT_DIR}" gc --prune=now --quiet
+
+  fxOK "$(fxGitAsOwner "${PROJECT_DIR}" rev-list --count HEAD) commit(s) left, $(du -sh "${PROJECT_DIR}/.git" | cut -f1) on disk"
+}
+
+
 function fxGitCheckForUpdate()
 {
   if [ -z "$1" ]; then
