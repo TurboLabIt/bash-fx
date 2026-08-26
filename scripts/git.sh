@@ -6,7 +6,14 @@ function fxGitAsOwner()
     local PROJECT_DIR=$1
   fi
 
-  local PROJECT_DIR_OWNER=$(fxGetFileOwner ${PROJECT_DIR})
+  ## the top-level dir often belongs to root, but the deploy key and the repo data
+  ## belong to the user owning .git (which is a file on submodules and worktrees)
+  local OWNER_PROBE=${PROJECT_DIR%/}/.git
+  if [ ! -e "${OWNER_PROBE}" ]; then
+    OWNER_PROBE=${PROJECT_DIR}
+  fi
+
+  local PROJECT_DIR_OWNER=$(fxGetFileOwner ${OWNER_PROBE})
 
   if [ "$(whoami)" = "$PROJECT_DIR_OWNER" ]; then
     git -C "${PROJECT_DIR}" "${@:2}"
