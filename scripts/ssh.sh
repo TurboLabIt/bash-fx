@@ -152,7 +152,7 @@ function fxSshResetUserSshPermissions()
     return 255
   fi
 
-  ## max-restriction for everything, including id_rsa
+  ## max-restriction for everything, including the private key(s)
   sudo chmod u=rw,go= ${USER_HOME}.ssh/*
   fxOK ".ssh/* OK"
 
@@ -183,6 +183,30 @@ function fxSshResetUserSshPermissions()
 }
 
 
+## the private key file of a user: modern id_ed25519 first, legacy id_rsa last. Empty if the user has no key
+function fxSshGetUserKeyFile()
+{
+  local USER_HOME=$(fxGetUserHomePath "${1}")
+
+  if [ -z "${USER_HOME}" ]; then
+    echo ""
+    return 255
+  fi
+
+  local USER_SSH_KEY_NAME
+  for USER_SSH_KEY_NAME in id_ed25519 id_rsa; do
+
+    if [ -f "${USER_HOME}.ssh/${USER_SSH_KEY_NAME}" ]; then
+
+      echo "${USER_HOME}.ssh/${USER_SSH_KEY_NAME}"
+      return 0
+    fi
+  done
+
+  echo ""
+}
+
+
 function fxSshGenerateUserKey()
 {
   local INPUT_USERNAME=$1
@@ -198,7 +222,14 @@ function fxSshGenerateUserKey()
   fi
 
   local USER_SSH_DIR=${USER_HOME}.ssh/
-  local USER_SSH_KEY=${USER_SSH_DIR}id_rsa
+
+  ## newer OpenSSH (Ubuntu 24.04+) defaults to ed25519; a brand-new key gets the modern algo
+  local USER_SSH_KEY=$(fxSshGetUserKeyFile "${INPUT_USERNAME}")
+
+  if [ -z "${USER_SSH_KEY}" ]; then
+    USER_SSH_KEY=${USER_SSH_DIR}id_ed25519
+  fi
+
   local USER_SSH_OWNER=${INPUT_USERNAME}:$(id -gn ${INPUT_USERNAME})
   local USER_SSH_DIR_CHANGED=
 
@@ -218,13 +249,13 @@ function fxSshGenerateUserKey()
 
   if [ ! -f "${USER_SSH_KEY}" ]; then
 
-    fxInfo "##${USER_SSH_KEY}## not found: generating it now..."
+    fxWarning "##${USER_SSH_KEY}## not found! Generating it now..."
 
     ${SUDO_CMD} mkdir -p "${USER_SSH_DIR}"
     ${SUDO_CMD} chown "${USER_SSH_OWNER}" "${USER_SSH_DIR}"
     ${SUDO_CMD} chmod u=rwx,go= "${USER_SSH_DIR}"
 
-    ${SUDO_USER_CMD} ssh-keygen -t rsa -N "" -f "${USER_SSH_KEY}" \
+    ${SUDO_USER_CMD} ssh-keygen -t ed25519 -N "" -f "${USER_SSH_KEY}" \
       -C "${INPUT_USERNAME} on $(hostname) by ${SCRIPT_NAME:-bash-fx}"
 
     if [ ! -f "${USER_SSH_KEY}" ]; then
@@ -249,7 +280,7 @@ function fxSshGenerateUserKey()
     fxInfo "##${USER_SSH_KEY}## already exists, skipping 🦘"
   fi
 
-  ## whatever we just wrote as root (known_hosts, id_rsa.pub) belongs to the user
+  ## whatever we just wrote as root (known_hosts, the .pub) belongs to the user
   if [ ! -z "${USER_SSH_DIR_CHANGED}" ]; then
 
     ${SUDO_CMD} chown -R "${USER_SSH_OWNER}" "${USER_SSH_DIR}"
