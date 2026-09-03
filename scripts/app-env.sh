@@ -23,14 +23,17 @@ fi
 if [ "$GIT_BRANCH" = "master" ] || [ "$GIT_BRANCH" = "main" ]; then
 
   APP_ENV=prod
+  NODE_ENV=production
   
 elif [ "$GIT_BRANCH" = "staging" ]; then
 
   APP_ENV=staging
+  NODE_ENV=production
   
 elif [ "$GIT_BRANCH" = "dev" ] || [[ "$GIT_BRANCH" = "dev-"* ]]; then
 
   APP_ENV=dev
+  NODE_ENV=development
 fi
 
 
