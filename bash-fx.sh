@@ -173,6 +173,7 @@ function fxSourceLocalOrRemote()
 
 fxSourceLocalOrRemote "scripts/timer.sh"
 fxSourceLocalOrRemote "scripts/validators.sh"
+fxSourceLocalOrRemote "scripts/array.sh"
 fxSourceLocalOrRemote "scripts/config-loader.sh"
 fxSourceLocalOrRemote "scripts/iptables-plus.sh"
 fxSourceLocalOrRemote "scripts/network.sh"

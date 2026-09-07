@@ -130,21 +130,14 @@ function fxRequireCompatbileUbuntuVersion()
   fi
   
   local VERSION_ID=$(fxGetUbuntuVersion)
-  
-  ## explode string to array 
-  readarray -d ' ' -t  ARR_COMPATIBLE_OS_VERSIONS <<< "$COMPATIBLE_OS_VERSIONS"
-    
-  for COMPATIBLE_OS_VERSION in "${ARR_COMPATIBLE_OS_VERSIONS[@]}"; do
 
-    ## trim the last element (?!?)
-    COMPATIBLE_OS_VERSION=$(echo "${COMPATIBLE_OS_VERSION}")
+  local ARR_COMPATIBLE_OS_VERSIONS
+  fxStringToArray ARR_COMPATIBLE_OS_VERSIONS "${COMPATIBLE_OS_VERSIONS}"
 
-    if [ "${VERSION_ID}" == "${COMPATIBLE_OS_VERSION}" ]; then
-      fxOK "OK, your OS ##${VERSION_ID}## is compatible"
-      return 0
-    fi
+  if fxInArray "${VERSION_ID}" "${ARR_COMPATIBLE_OS_VERSIONS[@]}"; then
+    fxOK "OK, your OS ##${VERSION_ID}## is compatible"
+    return 0
+  fi
 
-  done
-  
-  fxCatastrophicError "The current operating system version ##${VERSION_ID}## is incompatbile with the expected ##${COMPATIBLE_OS_VERSIONS}##" 
+  fxCatastrophicError "The current operating system version ##${VERSION_ID}## is incompatbile with the expected ##${COMPATIBLE_OS_VERSIONS}##"
 }
