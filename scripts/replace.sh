@@ -14,6 +14,30 @@ function fxReplaceContentInDirectory()
 }
 
 
+## fxReplaceContentInFile <file> <search> <replace>
+## Single-file sibling of fxReplaceContentInDirectory: same sed BRE search, same | delimiter
+## (no | & \ in the arguments). Returns 1 (and replaces nothing) when the search string isn't in the file
+function fxReplaceContentInFile()
+{
+  if [ ! -f "$1" ]; then
+    fxCatastrophicError "fxReplaceContentInFile: ##$1## is not a file!"
+  fi
+
+  if [ -z "$2" ]; then
+    fxCatastrophicError "fxReplaceContentInFile: content to replace ##$2## is undefined!"
+  fi
+
+  if ! grep -q -- "$2" "$1"; then
+
+    fxInfo "##$2## not found in ##$1##, nothing to replace 🦘"
+    return 1
+  fi
+
+  sed -i "s|$2|$3|g" "$1"
+  fxOK "##$2## => ##$3## in ##$1##"
+}
+
+
 function fxAlphanumOnly()
 {
   echo "${1}" | tr -cd '[:alnum:]'
