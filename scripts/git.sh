@@ -168,3 +168,28 @@ function fxGitCheckForUpdate()
 
   return 3
 }
+
+
+## fxGitRemoteUrlToVendorAndName <url>
+## Echoes "vendor/name" out of a git remote URL, whatever its form: git@github.com:Vendor/name.git,
+## ssh://git@host[:port]/Vendor/name.git, https://[user@]host/Vendor/name[.git], host:Vendor/name, a local path.
+## Only the last two path segments matter; the vendor is empty when the URL has a single segment
+function fxGitRemoteUrlToVendorAndName()
+{
+  local REMOTE_URL=${1%/}
+  REMOTE_URL=${REMOTE_URL%.git}
+  ## scheme://, user@ and the scp-like host: separator are dropped, so every form becomes host/Vendor/name
+  REMOTE_URL=${REMOTE_URL#*://}
+  REMOTE_URL=${REMOTE_URL#*@}
+  REMOTE_URL=${REMOTE_URL//:/\/}
+
+  local REPO_NAME=${REMOTE_URL##*/}
+  local REPO_VENDOR=
+
+  if [[ "${REMOTE_URL}" == */* ]]; then
+    REPO_VENDOR=${REMOTE_URL%/*}
+    REPO_VENDOR=${REPO_VENDOR##*/}
+  fi
+
+  echo "${REPO_VENDOR}/${REPO_NAME}"
+}
