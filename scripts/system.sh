@@ -72,24 +72,101 @@ function fxAptUpdate()
 
 
 ##
-## Reboot in $1 seconds (default: 60) without waiting for it: this returns at once, the calling script
-## ends normally and the pending reboot outlives it, its terminal and the SSH session which ran it
-## (multissh, deploy scripts, ...). To cancel it: sudo kill $(cat /run/bashfx-reboot.pid)
+## Run a command in background, detached, and return at once: the command outlives the calling script, its
+## terminal and the SSH session which ran it (multissh, deploy scripts, ...). It runs as root, through sudo.
 ##
-## Why not a plain "(sleep N; reboot) &": a background job stays in the process group of the script, and
-## that group gets a SIGHUP when the script ends -- it IS the session leader when ssh ran it -- or when its
-## terminal goes away. setsid moves the wait into a session of its own, out of reach of both. In the
-## foreground and waited for (-w), not "setsid ... &": the detached shell must exist BEFORE this returns,
-## or its fork races the exit of the caller and loses (the SIGHUP lands before it detaches). Every stream
-## to /dev/null: with no pty (plain ssh, cron, a pipe) the caller's ssh only returns once nothing holds its
-## stdout/stderr anymore, so a wait still attached to them would keep it hanging for the whole delay.
+## $1: the job name, as a path with no extension. Everything about the job sits next to it, i.e. for
+##     /run/bashfx-reboot:
+##       /run/bashfx-reboot.pid        the pid of the job, written by the job itself as soon as it starts
+##       /run/bashfx-reboot.log        whatever the job prints, stdout and stderr
+##       /run/bashfx-reboot.exit-code  written only once the job is over. No exit code and no such process
+##                                     anymore means it was killed, or the system went down under it
+##     The files of a previous run of the same job are wiped first
+##
+## $2: the command line, run by the job's own shell and not by a child of it: in "sleep 60; reboot", killing
+##     that shell while it sleeps is enough to call the reboot off. No "exit" in it: that would end the job
+##     before its exit code is written. Run a script instead
+##
+## To stop the job AND whatever it started: sudo kill -- -$(cat <job>.pid)
+##
+## Why not a plain "(command) &": a background job stays in the process group of the script, and that group
+## gets a SIGHUP when the script ends -- it IS the session leader when ssh ran it -- or when its terminal goes
+## away. setsid moves the job into a session of its own, out of reach of both. In the foreground and waited
+## for (-w), not "setsid ... &": the detached shell must exist BEFORE this returns, or its fork races the exit
+## of the caller and loses (the SIGHUP lands before it detaches). No stream left pointing at the caller's: with
+## no pty (plain ssh, cron, a pipe) the caller's ssh only returns once nothing holds its stdout/stderr anymore,
+## so a job still attached to them would keep it hanging for as long as the job runs.
+##
+## "set -m" is there for the kill above: with job control on, the job gets a process group of its own, whose id
+## is the job's pid. Whatever the job starts stays in that group, so "kill -- -<pid>" reaches all of it, where a
+## plain "kill <pid>" stops the job's shell only and leaves the command it's running at that moment orphaned
+##
+function fxRunDetached()
+{
+  local JOB_NAME="$1"
+  local JOB_COMMAND="$2"
+
+  if [ -z "${JOB_NAME}" ] || [ -z "${JOB_COMMAND}" ]; then
+
+    fxCatastrophicError "fxRunDetached: the job name and the command line are both required" no-exit
+    return 1
+  fi
+
+  local JOB_PIDFILE="${JOB_NAME}.pid"
+
+  ## the paths travel inside the "bash -c" script below: quoted for it
+  local JOB_DIR_Q JOB_PIDFILE_Q JOB_LOG_Q JOB_EXIT_CODE_Q
+  printf -v JOB_DIR_Q '%q' "$(dirname "${JOB_NAME}")"
+  printf -v JOB_PIDFILE_Q '%q' "${JOB_PIDFILE}"
+  printf -v JOB_LOG_Q '%q' "${JOB_NAME}.log"
+  printf -v JOB_EXIT_CODE_Q '%q' "${JOB_NAME}.exit-code"
+
+  ## the command line gets a line of its own: a trailing "&" or comment in it can't swallow the exit code line
+  sudo setsid -w bash -c "
+    mkdir -p ${JOB_DIR_Q}
+    rm -f ${JOB_PIDFILE_Q} ${JOB_EXIT_CODE_Q}
+    set -m
+    (
+      echo \$BASHPID > ${JOB_PIDFILE_Q}
+      ${JOB_COMMAND}
+      echo \$? > ${JOB_EXIT_CODE_Q}
+    ) > ${JOB_LOG_Q} 2>&1 < /dev/null &
+  "
+
+  ## Nothing says the job really started until its pidfile shows up: the job writes it, and a redirection
+  ## failing in there fails where this side can't see it
+  local JOB_WAIT
+  for JOB_WAIT in {1..50}; do
+
+    if [ -s "${JOB_PIDFILE}" ]; then
+      break
+    fi
+
+    sleep 0.1
+  done
+
+  if [ ! -s "${JOB_PIDFILE}" ]; then
+
+    fxCatastrophicError "The ##${JOB_NAME}## job didn't start: no pidfile after 5 seconds" no-exit
+    return 1
+  fi
+
+  fxOK "Running in background with pid ##$(cat "${JOB_PIDFILE}")##. Not waiting for it: this script goes on"
+  fxInfo "Output: ##${JOB_NAME}.log## | exit code, once it's over: ##${JOB_NAME}.exit-code##"
+  fxMessage "To stop it: sudo kill -- -\$(cat ${JOB_PIDFILE})"
+}
+
+
+##
+## Reboot in $1 seconds (default: 60) without waiting for it: this returns at once, the calling script ends
+## normally and the pending reboot outlives it, its terminal and the SSH session which ran it (see fxRunDetached).
+## To cancel it: sudo kill $(cat /run/bashfx-reboot.pid)
 ##
 ## Unattended by design: no countdown, no confirmation. That's for the caller, when a human is watching
 ##
 function fxRebootDelayed()
 {
   local REBOOT_DELAY_SEC="${1:-60}"
-  local REBOOT_PIDFILE=/run/bashfx-reboot.pid
 
   if ! [[ "$REBOOT_DELAY_SEC" =~ ^[0-9]+$ ]]; then
 
@@ -99,11 +176,10 @@ function fxRebootDelayed()
 
   fxTitle "🔌 Rebooting in ${REBOOT_DELAY_SEC} seconds"
 
-  ## $BASHPID is the pid of the detached subshell, the one to kill to call it off ($$ would be its parent, gone at once)
-  sudo setsid -w bash -c "( echo \$BASHPID > '${REBOOT_PIDFILE}'; sleep ${REBOOT_DELAY_SEC}; reboot ) > /dev/null 2>&1 < /dev/null &"
+  ## nothing got scheduled: the caller must know it, i.e. multissh must flag the host
+  fxRunDetached /run/bashfx-reboot "sleep ${REBOOT_DELAY_SEC}; reboot" || return 1
 
-  fxInfo "The system will reboot at $(date -d "+${REBOOT_DELAY_SEC} seconds" +'%T'). Not waiting for it: the wait runs in background, this script goes on"
-  fxMessage "To cancel it: sudo kill \$(cat ${REBOOT_PIDFILE})"
+  fxInfo "The system will reboot at $(date -d "+${REBOOT_DELAY_SEC} seconds" +'%T')"
 }
 
 
