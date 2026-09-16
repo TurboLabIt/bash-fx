@@ -60,7 +60,8 @@ function fxAskConfirmation()
 
   fxWarning "$CONFIRM_MESSAGE"
 
-  if [ -t 0 ]; then
+  ## test /dev/tty, not stdin: "curl ... | sudo bash" has a pipe on stdin, yet a user at the keyboard
+  if { : < /dev/tty; } 2>/dev/null; then
 
     # Running in a terminal, interactively ask for confirmation
     read -p ">> " -n 1 -r < /dev/tty
