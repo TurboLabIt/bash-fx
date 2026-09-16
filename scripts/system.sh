@@ -69,3 +69,39 @@ function fxAptUpdate()
 
   fxOK "apt cache updated"
 }
+
+
+##
+## Reboot in $1 seconds (default: 60) without waiting for it: this returns at once, the calling script
+## ends normally and the pending reboot outlives it, its terminal and the SSH session which ran it
+## (multissh, deploy scripts, ...). To cancel it: sudo kill $(cat /run/bashfx-reboot.pid)
+##
+## Why not a plain "(sleep N; reboot) &": a background job stays in the process group of the script, and
+## that group gets a SIGHUP when the script ends -- it IS the session leader when ssh ran it -- or when its
+## terminal goes away. setsid moves the wait into a session of its own, out of reach of both. In the
+## foreground and waited for (-w), not "setsid ... &": the detached shell must exist BEFORE this returns,
+## or its fork races the exit of the caller and loses (the SIGHUP lands before it detaches). Every stream
+## to /dev/null: with no pty (plain ssh, cron, a pipe) the caller's ssh only returns once nothing holds its
+## stdout/stderr anymore, so a wait still attached to them would keep it hanging for the whole delay.
+##
+## Unattended by design: no countdown, no confirmation. That's for the caller, when a human is watching
+##
+function fxRebootDelayed()
+{
+  local REBOOT_DELAY_SEC="${1:-60}"
+  local REBOOT_PIDFILE=/run/bashfx-reboot.pid
+
+  if ! [[ "$REBOOT_DELAY_SEC" =~ ^[0-9]+$ ]]; then
+
+    fxWarning "The reboot delay must be an integer, got '${REBOOT_DELAY_SEC}': rebooting in 60 seconds"
+    REBOOT_DELAY_SEC=60
+  fi
+
+  fxTitle "🔌 Rebooting in ${REBOOT_DELAY_SEC} seconds"
+
+  ## $BASHPID is the pid of the detached subshell, the one to kill to call it off ($$ would be its parent, gone at once)
+  sudo setsid -w bash -c "( echo \$BASHPID > '${REBOOT_PIDFILE}'; sleep ${REBOOT_DELAY_SEC}; reboot ) > /dev/null 2>&1 < /dev/null &"
+
+  fxInfo "The system will reboot at $(date -d "+${REBOOT_DELAY_SEC} seconds" +'%T'). Not waiting for it: the wait runs in background, this script goes on"
+  fxMessage "To cancel it: sudo kill \$(cat ${REBOOT_PIDFILE})"
+}
