@@ -21,8 +21,9 @@ function fxAskYesNo()
 
   fxWarning "${QUESTION} ${HINT}"
 
-  ## Not running in a terminal (e.g. via cron): don't hang on read, go with the default
-  if [ ! -t 0 ]; then
+  ## No terminal to read the answer from (e.g. via cron): don't hang on read, go with the default.
+  ## Test /dev/tty, not stdin: "curl ... | sudo bash" has a pipe on stdin, yet a user at the keyboard
+  if ! { : < /dev/tty; } 2>/dev/null; then
 
     fxWarning "No terminal detected (non-interactive environment). Assuming ##${DEFAULT_ANSWER}##"
     [ "${DEFAULT_ANSWER}" = Y ]
