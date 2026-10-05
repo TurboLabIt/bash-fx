@@ -1,7 +1,9 @@
-## Usage: fxMirrorFromSsh "example.com" "/var/www/source" "/var/www/destination" <"root"> <"2222"> <"no-delay"> <"with-logs"> <"fast">
+## Usage: fxMirrorFromSsh "example.com" "/var/www/source" "/var/www/destination" <"root"> <"2222"> <"no-delay"> <"full"> <"fast">
 ## Result: remote:/var/www/source/file.txt => local:/var/www/destination/file.txt
 ##         The CONTENTS of /var/www/source are synced INTO /var/www/destination.
 ##         It does NOT create /var/www/destination/source/
+## "full" (no filter rules at all) and "fast" are mutually exclusive. "fast" stays the
+## 8th arg, as always: a zzalias/bash-fx version skew can't silently drop it
 function fxMirrorFromSsh()
 {
   local REMOTE_HOST="${1}"
@@ -10,14 +12,14 @@ function fxMirrorFromSsh()
   local REMOTE_USER="${4}"
   local REMOTE_PORT="${5}"
   local DELAY_OPT="${6}"
-  local WITH_LOGS_OPT="${7}"
+  local FULL_OPT="${7}"
   local FAST_OPT="${8}"
 
-  fxMirrorSsh "from" "${REMOTE_HOST}" "${REMOTE_PATH}" "${LOCAL_DESTINATION}" "${REMOTE_USER}" "${REMOTE_PORT}" "${DELAY_OPT}" "${WITH_LOGS_OPT}" "${FAST_OPT}"
+  fxMirrorSsh "from" "${REMOTE_HOST}" "${REMOTE_PATH}" "${LOCAL_DESTINATION}" "${REMOTE_USER}" "${REMOTE_PORT}" "${DELAY_OPT}" "${FULL_OPT}" "${FAST_OPT}"
 }
 
 
-## Usage: fxMirrorToSsh "/var/www/source" "example.com" "/var/www/destination" <"root"> <"2222"> <"no-delay"> <"with-logs"> <"fast">
+## Usage: fxMirrorToSsh "/var/www/source" "example.com" "/var/www/destination" <"root"> <"2222"> <"no-delay"> <"full"> <"fast">
 ## Result: local:/var/www/source/file.txt => remote:/var/www/destination/file.txt
 ##         The CONTENTS of /var/www/source are synced INTO /var/www/destination.
 ##         It does NOT create /var/www/destination/source/
@@ -29,10 +31,10 @@ function fxMirrorToSsh()
   local REMOTE_USER="${4}"
   local REMOTE_PORT="${5}"
   local DELAY_OPT="${6}"
-  local WITH_LOGS_OPT="${7}"
+  local FULL_OPT="${7}"
   local FAST_OPT="${8}"
 
-  fxMirrorSsh "to" "${REMOTE_HOST}" "${REMOTE_PATH}" "${LOCAL_SOURCE}" "${REMOTE_USER}" "${REMOTE_PORT}" "${DELAY_OPT}" "${WITH_LOGS_OPT}" "${FAST_OPT}"
+  fxMirrorSsh "to" "${REMOTE_HOST}" "${REMOTE_PATH}" "${LOCAL_SOURCE}" "${REMOTE_USER}" "${REMOTE_PORT}" "${DELAY_OPT}" "${FULL_OPT}" "${FAST_OPT}"
 }
 
 
@@ -57,7 +59,7 @@ function fxMirrorSsh()
   local REMOTE_USER="${5}"
   local REMOTE_PORT="${6}"
   local DELAY_OPT="${7}"
-  local WITH_LOGS_OPT="${8}"
+  local FULL_OPT="${8}"
   local FAST_OPT="${9}"
 
   fxTitle "🪞 Mirroring!"
@@ -88,6 +90,12 @@ function fxMirrorSsh()
   if [ "${DIRECTION}" != "from" ] && [ "${DIRECTION}" != "to" ]; then
 
     fxCatastrophicError "Direction must be 'from' or 'to'" 0
+    return 255
+  fi
+
+  if [ "${FAST_OPT}" = "fast" ] && [ "${FULL_OPT}" = "full" ]; then
+
+    fxCatastrophicError "'fast' and 'full' are mutually exclusive" 0
     return 255
   fi
 
@@ -186,20 +194,6 @@ function fxMirrorSsh()
     LABEL_TO="${REMOTE_LABEL}"
   fi
 
-  ## rsync filter rules are FIRST MATCH WINS, so every --include must come before the
-  ## --exclude it carves an exception out of.
-  ## logs are excluded by default (webapp mirroring); "with-logs" mirrors them too
-  local -a LOG_FILTER_OPT=(
-    --include 'var/log/.gitignore'  --exclude 'var/log/**'
-    --include 'var/logs/.gitignore' --exclude 'var/logs/**'
-    --exclude '*.log' --exclude '*.log.[0-9]*'
-  )
-
-  if [ "${WITH_LOGS_OPT}" = "with-logs" ]; then
-
-    LOG_FILTER_OPT=()
-  fi
-
   ## "fast" skips the subtrees that typically dwarf the codebase itself: bulk uploaded
   ## content and regenerable build artifacts. Those often live on another filesystem
   ## too, and rsync crosses mount points (we pass no --one-file-system), so a plain
@@ -213,6 +207,25 @@ function fxMirrorSsh()
       --exclude 'wp-content/uploads/**'
       --exclude '*.pdf'
     )
+  fi
+
+  ## rsync filter rules are FIRST MATCH WINS, so every --include must come before the
+  ## --exclude it carves an exception out of
+  local -a FILTER_OPT=(
+    "${FAST_FILTER_OPT[@]}"
+    --include 'var/log/.gitignore'      --exclude 'var/log/**'
+    --include 'var/logs/.gitignore'     --exclude 'var/logs/**'
+    --exclude '*.log'                   --exclude '*.log.[0-9]*'
+    --include 'var/cache/.gitignore'    --exclude 'var/cache/**'
+    --include 'var/tmp/.gitignore'      --exclude 'var/tmp/**'
+    --include 'var/session/.gitignore'  --exclude 'var/session/**'
+    --include 'var/sessions/.gitignore' --exclude 'var/sessions/**'
+  )
+
+  ## "full" mirrors everything: not a single filter rule
+  if [ "${FULL_OPT}" = "full" ]; then
+
+    FILTER_OPT=()
   fi
 
   ## live progress on a terminal, a quiet summary under cron
@@ -233,12 +246,7 @@ function fxMirrorSsh()
     "${SUDO_OPT[@]}"
     --delete --delete-excluded
     "${PROGRESS_OPT[@]}"
-    "${FAST_FILTER_OPT[@]}"
-    "${LOG_FILTER_OPT[@]}"
-    --include 'var/cache/.gitignore'    --exclude 'var/cache/**'
-    --include 'var/tmp/.gitignore'      --exclude 'var/tmp/**'
-    --include 'var/session/.gitignore'  --exclude 'var/session/**'
-    --include 'var/sessions/.gitignore' --exclude 'var/sessions/**'
+    "${FILTER_OPT[@]}"
     "${SRC}"
     "${DST}"
   )
@@ -249,6 +257,11 @@ function fxMirrorSsh()
   if [ "${FAST_OPT}" = "fast" ]; then
 
     echo "Mode: ⚡ fast - skipping pub/media, var/import, var/report, generated/code, wp-content/uploads, *.pdf"
+  fi
+
+  if [ "${FULL_OPT}" = "full" ]; then
+
+    echo "Mode: 💯 full - no excludes: logs, cache, tmp and sessions are mirrored too"
   fi
 
   echo ""
