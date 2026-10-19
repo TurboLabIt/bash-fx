@@ -117,6 +117,17 @@ function fxGitCheckForUpdate()
   fi
 
   fxGitAsOwner "${PROJECT_DIR}" fetch
+  local GIT_FETCH_RESULT=$?
+
+  ## a failed fetch leaves @{u} where it was: comparing against it would report a bogus "Up-to-date"
+  if [ "${GIT_FETCH_RESULT}" != 0 ]; then
+
+    if [ -z "$SILENT_MODE" ]; then
+      fxWarning "The fetch FAILED: unable to check for updates"
+    fi
+
+    return 255
+  fi
 
   local LOCAL_REV=$(fxGitAsOwner "${PROJECT_DIR}" rev-parse @)
 
