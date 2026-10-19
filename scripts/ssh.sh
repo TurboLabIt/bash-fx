@@ -103,7 +103,14 @@ function fxSshSetKnownHosts()
 
   fxTitle "🪣 Adding Bitbucket..."
   ## this one is served in known_hosts format already
-  fxSshAddKnownHost bitbucket.org "$(curl -s https://bitbucket.org/site/ssh)"
+  local BITBUCKET_HOST_KEYS=$(curl -s https://bitbucket.org/site/ssh)
+  fxSshAddKnownHost bitbucket.org "${BITBUCKET_HOST_KEYS}"
+
+  ## git-over-SSH moves to ssh.bitbucket.org (bitbucket.org refuses it from 2026-11-12): same keys, still listed
+  ## as bitbucket.org. Whatever name they carry gets replaced: a plain s/bitbucket.org/ssh.bitbucket.org/
+  ## would turn into ssh.ssh.bitbucket.org once Bitbucket updates the list
+  # https://community.atlassian.com/forums/discussion/3234032/
+  fxSshAddKnownHost ssh.bitbucket.org "$(echo "${BITBUCKET_HOST_KEYS}" | sed 's/^[^ ]* /ssh.bitbucket.org /')"
 }
 
 
