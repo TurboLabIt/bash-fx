@@ -73,6 +73,46 @@ else
 fi
 
 
+fxTitle "fxStringToArray: a separator of its own, skipping the empty items..."
+fxStringToArray LIST_ARRAY ",test,,staging,prod," ","
+
+if [ "${#LIST_ARRAY[@]}" = 3 ] && [ "${LIST_ARRAY[0]}" = "test" ] && [ "${LIST_ARRAY[1]}" = "staging" ] && [ "${LIST_ARRAY[2]}" = "prod" ]; then
+  fxOK "PASS"
+else
+  fxWarning "FAIL"
+fi
+
+
+fxTitle "fxStringToArray: with a separator, the blanks stay in the items..."
+fxStringToArray LIST_ARRAY "/opt/my lists/test.txt,/opt/my lists/prod.txt" ","
+
+if [ "${#LIST_ARRAY[@]}" = 2 ] && [ "${LIST_ARRAY[0]}" = "/opt/my lists/test.txt" ] && [ "${LIST_ARRAY[1]}" = "/opt/my lists/prod.txt" ]; then
+  fxOK "PASS"
+else
+  fxWarning "FAIL"
+fi
+
+
+fxTitle "fxStringToArray: with a separator, no separator in the string is one item..."
+fxStringToArray LIST_ARRAY "test" ","
+
+if [ "${#LIST_ARRAY[@]}" = 1 ] && [ "${LIST_ARRAY[0]}" = "test" ]; then
+  fxOK "PASS"
+else
+  fxWarning "FAIL"
+fi
+
+
+fxTitle "fxStringToArray: with a separator, an empty string empties a previously filled array..."
+fxStringToArray LIST_ARRAY "" ","
+
+if [ "${#LIST_ARRAY[@]}" = 0 ]; then
+  fxOK "PASS"
+else
+  fxWarning "FAIL"
+fi
+
+
 fxStringToArray LIST_ARRAY "${LIST}"
 
 fxTitle "fxInArray: finds an item..."
