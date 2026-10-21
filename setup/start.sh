@@ -54,12 +54,17 @@ else
 
   REMOTE_URL=$(git remote get-url origin 2>/dev/null)
 
+  ## no terminal (cron): /dev/tty doesn't open there, and a bare "< /dev/tty" would fail every unattended update.
+  ## Nobody could answer a prompt anyway. Inline on purpose: this runs against the host's bash-fx, however old
+  FETCH_STDIN=/dev/null
+  if { : < /dev/tty; } 2>/dev/null; then FETCH_STDIN=/dev/tty; fi
+
   # Force SSH to prompt on the real terminal, not a hidden GUI dialog: under sudo-rs
   # DISPLAY is inherited (=:0), which can divert the host-key prompt to a graphical
   # askpass and leave the terminal frozen at "Updating...". Bound the connect too.
   SSH_ASKPASS_REQUIRE=never \
   GIT_SSH_COMMAND="ssh -o ConnectTimeout=15" \
-  git fetch --depth 1 < /dev/tty || {
+  git fetch --depth 1 < "${FETCH_STDIN}" || {
 
     # blame what actually broke: only an SSH remote can fail on root's missing key,
     # an HTTPS one fails on connectivity/DNS (and git already printed the real reason)
