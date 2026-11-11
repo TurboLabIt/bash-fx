@@ -159,8 +159,10 @@ function fxSshResetUserSshPermissions()
     return 255
   fi
 
-  ## max-restriction for everything, including the private key(s)
-  sudo chmod u=rw,go= ${USER_HOME}.ssh/*
+  ## max-restriction for everything, including the private key(s). Sub-folders (e.g. ControlMaster sockets)
+  ## keep their x: without it, nobody can enter them anymore
+  sudo find "${USER_HOME}.ssh" -mindepth 1 -maxdepth 1 -xtype f -exec chmod u=rw,go= {} +
+  sudo find "${USER_HOME}.ssh" -mindepth 1 -maxdepth 1 -type d -exec chmod u=rwx,go= {} +
   fxOK ".ssh/* OK"
 
   ## loosen public key(s)
